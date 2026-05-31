@@ -1,12 +1,20 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Guia Turístico Aparecida - Premium</title>
-
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#0d6efd">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Guia Aparecida">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%230d6efd'/%3E%3Ctext x='50' y='67' font-size='50' text-anchor='middle' fill='white' font-family='Arial'%3E⛪%3C/text%3E%3C/svg%3E">
+    
     <!-- Fontes e Ícones -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
         :root {
@@ -17,7 +25,6 @@
         }
 
         body { margin: 0; font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
-        
         
         /* Estilo da nova barra de status */
         .status-bar { 
@@ -90,72 +97,63 @@
 
         .btn-voltar { background: #fff; color: var(--primary); padding: 10px 20px; border-radius: 12px; border: none; font-weight: 600; margin-bottom: 15px; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
 
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
 
-.contact-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 15px;
-    margin-top: 20px;
-}
+        .btn-contact {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px 18px;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            color: #fff;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            letter-spacing: 0.5px;
+        }
 
-.btn-contact {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    padding: 14px 18px;
-    border-radius: 12px;
-    font-weight: 600;
-    text-decoration: none;
-    color: #fff;
-    font-size: 15px;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    letter-spacing: 0.5px;
-}
+        .btn-contact i {
+            font-size: 18px;
+        }
 
-/* Ícones */
-.btn-contact i {
-    font-size: 18px;
-}
+        .bg-whatsapp {
+            background: linear-gradient(135deg, #25D366, #1ebe5d);
+        }
 
-/* WhatsApp */
-.bg-whatsapp {
-    background: linear-gradient(135deg, #25D366, #1ebe5d);
-}
+        .bg-phone {
+            background: linear-gradient(135deg, #007BFF, #0056d2);
+        }
 
-/* Telefone */
-.bg-phone {
-    background: linear-gradient(135deg, #007BFF, #0056d2);
-}
+        .bg-email {
+            background: linear-gradient(135deg, #ff5e57, #e04842);
+        }
 
-/* Email */
-.bg-email {
-    background: linear-gradient(135deg, #ff5e57, #e04842);
-}
+        .btn-contact:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+            filter: brightness(1.05);
+        }
 
-/* Hover elegante */
-.btn-contact:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
-    filter: brightness(1.05);
-}
+        .btn-contact:active {
+            transform: scale(0.97);
+            box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+        }
 
-/* Clique */
-.btn-contact:active {
-    transform: scale(0.97);
-    box-shadow: 0 3px 8px rgba(0,0,0,0.2);
-}
+        @media (max-width: 480px) {
+            .btn-contact {
+                font-size: 14px;
+                padding: 12px;
+            }
+        }
 
-/* Mobile */
-@media (max-width: 480px) {
-    .btn-contact {
-        font-size: 14px;
-        padding: 12px;
-    }
-}
-
-    
         /* Banner Rotativo Moderno (Topo) */
         #banner-container {
             width: 100%;
@@ -276,6 +274,7 @@
         .btn-action:hover { background: #f8f9fa; transform: translateY(-2px); }
         .btn-share { color: #0d6efd; }
         .btn-rate { color: #ffc107; }
+        .btn-install { color: #28a745; }
 
         /* Sistema de Modo Noturno */
         .dark-mode-toggle {
@@ -388,7 +387,6 @@
             margin-bottom: 15px; cursor: pointer; display: flex; 
             align-items: center; gap: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); width: 100%;
         }
-
     </style>
 </head>
 
@@ -437,6 +435,9 @@
         <button class="btn-action btn-rate" onclick="abrirModalAvaliacao()">
             <i class="fas fa-star"></i> Avaliar App
         </button>
+        <button class="btn-action btn-install" id="installButton" style="display:none;">
+            <i class="fas fa-download"></i> Instalar App
+        </button>
     </div>
 
     <div id="modalAvaliacao" class="modal">
@@ -459,7 +460,7 @@
     <div class="adsense-footer">
         <div class="adsense-tag">Anúncios Patrocinados</div>
         <div class="adsense-grid">
-            <a href="https://api.whatsapp.com/send?phone=5512999999999&text=Quero+anunciar+no+guia" target="_blank" class="adsense-card">
+            <a href="https://api.whatsapp.com/send?phone=5512996342373&text=Quero+anunciar+no+guia" target="_blank" class="adsense-card">
                 <i class="fas fa-bullhorn" style="color: #ea4335;"></i>
                 <span>Anuncie Aqui!</span>
             </a>
@@ -471,8 +472,8 @@
                 <i class="fas fa-utensils" style="color: #34a853;"></i>
                 <span>Pedir Comida</span>
             </a>
-            <a href="https://api.whatsapp.com/send?phone=5512999999999&text=Quero+um+taxi" target="_blank" class="adsense-card">
-                <i class="fas fa-taxi" style="color: #fbbc05;"></i>
+            <a href="https://api.whatsapp.com/send?phone=5512981778259&text=Quero+um+taxi" target="_blank" class="adsense-card">
+                <i class="fa fa-motorcycle" style="color: #fbbc05;"></i>
                 <span>Chamar Táxi</span>
             </a>
         </div>
@@ -486,7 +487,89 @@
 </div>
 
 <script>
-// Lista Completa baseada no arquivo "corpo app editor principal guia.html"[cite: 1]
+// ==================== PWA - Manifest e Service Worker Dinâmicos ====================
+(function() {
+    // 1. Criar o manifesto (JSON) como um blob URL
+    const manifestObj = {
+        name: "Guia Turístico Aparecida",
+        short_name: "Guia Aparecida",
+        description: "Guia completo de pontos turísticos, hotéis, restaurantes e serviços em Aparecida - SP.",
+        start_url: ".",
+        display: "standalone",
+        theme_color: "#0d6efd",
+        background_color: "#ffffff",
+        icons: [
+            {
+                src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%230d6efd'/%3E%3Ctext x='50' y='67' font-size='50' text-anchor='middle' fill='white' font-family='Arial'%3E⛪%3C/text%3E%3C/svg%3E",
+                sizes: "any",
+                type: "image/svg+xml",
+                purpose: "any maskable"
+            }
+        ]
+    };
+    const manifestBlob = new Blob([JSON.stringify(manifestObj)], {type: "application/json"});
+    const manifestURL = URL.createObjectURL(manifestBlob);
+    const manifestLink = document.createElement("link");
+    manifestLink.rel = "manifest";
+    manifestLink.href = manifestURL;
+    document.head.appendChild(manifestLink);
+
+    // 2. Service Worker - gerado dinamicamente
+    const swCode = `
+        const CACHE_NAME = 'guia-aparecida-v1';
+        const urlsToCache = [
+            '.',
+            'index.html'
+        ];
+
+        self.addEventListener('install', event => {
+            event.waitUntil(
+                caches.open(CACHE_NAME)
+                    .then(cache => cache.addAll(urlsToCache))
+            );
+        });
+
+        self.addEventListener('fetch', event => {
+            event.respondWith(
+                caches.match(event.request)
+                    .then(response => response || fetch(event.request))
+            );
+        });
+    `;
+    const swBlob = new Blob([swCode], {type: "application/javascript"});
+    const swURL = URL.createObjectURL(swBlob);
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register(swURL).then(reg => {
+            console.log('Service Worker registrado com sucesso:', reg);
+        }).catch(err => {
+            console.log('Falha no registro do Service Worker:', err);
+        });
+    }
+
+    // 3. Botão de instalação (opcional)
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        const installBtn = document.getElementById('installButton');
+        if (installBtn) installBtn.style.display = 'flex';
+        installBtn.addEventListener('click', () => {
+            installBtn.style.display = 'none';
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult.outcome === 'accepted') {
+                    console.log('Usuário aceitou a instalação');
+                } else {
+                    console.log('Usuário recusou a instalação');
+                }
+                deferredPrompt = null;
+            });
+        });
+    });
+})();
+
+// ==================== Código Original do App (mantido intacto) ====================
+// Lista Completa baseada no arquivo "corpo app editor principal guia.html"
 const paginas = [
 
     // --- CADASTROS BARES E RESTAURANTES ---
@@ -9414,7 +9497,7 @@ Localizado no pátio do Santuário Nacional, o Centro de Apoio ao Romeiro foi in
         <div class="highlight-card">
             <h3><i class="fa-solid fa-circle-info"></i> Curiosidade sobre a Construção</h3>
             <p>
-                Inaugurada no dia **1º de janeiro de 1971**, a Passarela da Fé foi erguida com o objetivo de livrar os peregrinos do perigo de atropelamentos, já que antes de sua construção os romeiros precisavam cruzar as movimentadas ruas centrais e avenidas da cidade para se deslocarem entre as duas igrejas.
+                Inaugurada no dia **1º de janeiro de 1971**, a Passarela da Fé foi erguida com o objetivo de livrar os peregrinos do perigo de atropelamentos, já que antes de sua construção os romeiros precisavam cruzar as movimentadas ruas centrais e avenidas da cidade para se deslocar entre as duas igrejas.
             </p>
         </div>
 
@@ -10977,7 +11060,8 @@ function enviarAvaliacao() {
 window.onload = function() {
     renderMenu();
     iniciarBannerRandomico();
-};</script>
+};
+</script>
 
 </body>
 </html>
