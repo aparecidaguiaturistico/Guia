@@ -413,14 +413,14 @@
     
     <!-- Nova Barra de Status -->
     <div id="status-bar" class="status-bar">
-        <div class="status-msg active">Encontre aqui os melhores restaurantes!</div>
+        <div class="status-msg active">Encontre os melhores restaurantes!</div>
         <div class="status-msg">Seja nosso parceiro.</div>
         <div class="status-msg">Confira os Hotéis e Pousadas.</div>
         <div class="status-msg">Conheça a sala da Promessas.</div>
         <div class="status-msg">Faça um passeio no Bondinhos Aéreos!</div>
         <div class="status-msg">Visite o Morro do Cruzeiro.</div>
         <div class="status-msg">Centro de apoio ao romeiro com várias lojas!</div>
-        <div class="status-msg">Temos também a feira livre!</div>
+        <div class="status-msg">Também temos a feira livre!</div>
     </div>
 
     <div id="search-area" class="search-box">
@@ -472,7 +472,7 @@
                 <i class="fas fa-utensils" style="color: #34a853;"></i>
                 <span>Pedir Comida</span>
             </a>
-            <a href="https://wa.me/5512981778259&text=Quero+um+taxi" target="_blank" class="adsense-card">
+            <a href="https://api.whatsapp.com/send?phone=5512981778259&text=Quero+um+taxi" target="_blank" class="adsense-card">
                 <i class="fa fa-motorcycle" style="color: #fbbc05;"></i>
                 <span>Chamar Táxi</span>
             </a>
@@ -680,7 +680,7 @@ const paginas = [
         <div class="contact-grid">
 <center>
 <p><a href="https://api.whatsapp.com/send?phone=5512999999999" class="btn-contact bg-whatsapp"><i class="fab fa-whatsapp"></i>RESERVAS</a></p>
-<p><a href="https://maps.app.goo.gl/maVXfm9AXL17QD3PA" class="btn-contact bg-map" target="_blank"><i class="fas fa-map-marker-alt"></i> VER NO MAPA</a></p>
+<p><a href="https://www.google.com/maps/place/R.+Joaquina+Prado,+276+-+Ponte+Alta,+Aparecida+-+SP,+12570-000/@-22.8493109,-45.2389115,17z/data=!3m1!4b1!4m6!3m5!1s0x94ccc36a2f95a5e9:0xc120d83c7176e428!8m2!3d-22.8493109!4d-45.2389115!16s%2Fg%2F11c5h_s119?entry=ttu&g_ep=EgoyMDI2MDYwMS4wIKXMDSoASAFQAw%3D%3D" class="btn-contact bg-map" target="_blank"><i class="fas fa-map-marker-alt"></i> VER NO MAPA</a></p>
 </center>
 
         </div>`
@@ -867,6 +867,11 @@ const paginas = [
 
         .time-label {
             color: var(--success-color);
+            font-weight: 600;
+        }
+
+        .closed-label {
+            color: #dc3545;
             font-weight: 600;
         }
 
@@ -10690,6 +10695,8 @@ Localizado no pátio do Santuário Nacional, o Centro de Apoio ao Romeiro foi in
 
   
 
+
+
 <b>Gostaria de anuciar no nosso aplicativo?</b>
 
 <b>Entre em contato para mais informações</b>
@@ -11060,83 +11067,5 @@ window.onload = function() {
 };
 </script>
 
-<!-- SCRIPT PARA CORRIGIR LINKS intent:// e whatsapp:// -->
-<script>
-(function() {
-    // Converte um link intent:// do Google Maps para HTTPS
-    function converterIntentMapa(url) {
-        // Exemplo: intent://www.google.com/maps/place/.../@-22.8493059,-45.2414864,17z/...
-        // Extrai coordenadas no formato @lat,lng
-        const coordMatch = url.match(/@([-\d.]+),([-\d.]+),([\d.]+)z/);
-        if (coordMatch) {
-            const lat = coordMatch[1];
-            const lng = coordMatch[2];
-            return `https://www.google.com/maps?q=${lat},${lng}`;
-        }
-        // Se não encontrar coordenadas, tenta extrair o endereço após /place/
-        const placeMatch = url.match(/\/place\/([^\/]+)/);
-        if (placeMatch) {
-            const place = decodeURIComponent(placeMatch[1].replace(/\+/g, ' '));
-            return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place)}`;
-        }
-        // fallback: remove o prefixo intent:// e tenta usar o restante como HTTPS
-        let fallback = url.replace(/^intent:\/\//, 'https://');
-        // Remove sufixo #Intent;...
-        fallback = fallback.split('#Intent')[0];
-        return fallback;
-    }
-
-    // Converte whatsapp:// para https://wa.me/
-    function converterWhatsApp(url) {
-        // Exemplo: whatsapp://send?phone=5511999999999
-        const phoneMatch = url.match(/phone=(\d+)/);
-        if (phoneMatch) {
-            return `https://wa.me/${phoneMatch[1]}`;
-        }
-        return url;
-    }
-
-    // Corrige todos os links do DOM
-    function corrigirLinks() {
-        const links = document.querySelectorAll('a[href]');
-        links.forEach(link => {
-            let href = link.getAttribute('href');
-            if (!href) return;
-            if (href.startsWith('intent://')) {
-                const novoHref = converterIntentMapa(href);
-                link.setAttribute('href', novoHref);
-                // Se o link tiver target="_blank" sem necessidade, mantém
-            } else if (href.startsWith('whatsapp://')) {
-                const novoHref = converterWhatsApp(href);
-                link.setAttribute('href', novoHref);
-            }
-        });
-    }
-
-    // Intercepta cliques para links que por ventura não foram corrigidos (ex: gerados dinamicamente)
-    document.body.addEventListener('click', function(e) {
-        let target = e.target.closest('a');
-        if (!target) return;
-        let href = target.getAttribute('href');
-        if (!href) return;
-        if (href.startsWith('intent://')) {
-            e.preventDefault();
-            const novoHref = converterIntentMapa(href);
-            window.location.href = novoHref;
-        } else if (href.startsWith('whatsapp://')) {
-            e.preventDefault();
-            const novoHref = converterWhatsApp(href);
-            window.location.href = novoHref;
-        }
-    });
-
-    // Executa ao carregar e também quando o conteúdo interno for alterado (usando MutationObserver)
-    corrigirLinks();
-    const observer = new MutationObserver(function(mutations) {
-        corrigirLinks();
-    });
-    observer.observe(document.body, { childList: true, subtree: true });
-})();
-</script>
 </body>
 </html>
