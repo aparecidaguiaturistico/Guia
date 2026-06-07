@@ -413,7 +413,7 @@
     
     <!-- Nova Barra de Status -->
     <div id="status-bar" class="status-bar">
-        <div class="status-msg active">Encontre os melhores restaurantes!</div>
+        <div class="status-msg active">Encontre aqui os melhores restaurantes!</div>
         <div class="status-msg">Seja nosso parceiro.</div>
         <div class="status-msg">Confira os Hotéis e Pousadas.</div>
         <div class="status-msg">Conheça a sala da Promessas.</div>
@@ -500,11 +500,17 @@
         background_color: "#ffffff",
         icons: [
             {
-                src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%230d6efd'/%3E%3Ctext x='50' y='67' font-size='50' text-anchor='middle' fill='white' font-family='Arial'%3E⛪%3C/text%3E%3C/svg%3E",
-                sizes: "any",
-                type: "image/svg+xml",
-                purpose: "any maskable"
-            }
+                src: "https://i.imgur.com/CQRDCe6.png",
+                sizes: "192x192",
+                type: "image/png",
+                purpose: "any"
+            },
+            {
+                src: "https://i.imgur.com/XqGeBJV.png",
+                sizes: "512x512",
+                type: "image/png",
+                purpose: "any"
+            },
         ]
     };
     const manifestBlob = new Blob([JSON.stringify(manifestObj)], {type: "application/json"});
@@ -867,6 +873,11 @@ const paginas = [
 
         .time-label {
             color: var(--success-color);
+            font-weight: 600;
+        }
+
+        .closed-label {
+            color: #dc3545;
             font-weight: 600;
         }
 
@@ -10690,6 +10701,8 @@ Localizado no pátio do Santuário Nacional, o Centro de Apoio ao Romeiro foi in
 
   
 
+
+
 <b>Gostaria de anuciar no nosso aplicativo?</b>
 
 <b>Entre em contato para mais informações</b>
@@ -11060,83 +11073,5 @@ window.onload = function() {
 };
 </script>
 
-<!-- SCRIPT PARA CORRIGIR LINKS intent:// e whatsapp:// -->
-<script>
-(function() {
-    // Converte um link intent:// do Google Maps para HTTPS
-    function converterIntentMapa(url) {
-        // Exemplo: intent://www.google.com/maps/place/.../@-22.8493059,-45.2414864,17z/...
-        // Extrai coordenadas no formato @lat,lng
-        const coordMatch = url.match(/@([-\d.]+),([-\d.]+),([\d.]+)z/);
-        if (coordMatch) {
-            const lat = coordMatch[1];
-            const lng = coordMatch[2];
-            return `https://www.google.com/maps?q=${lat},${lng}`;
-        }
-        // Se não encontrar coordenadas, tenta extrair o endereço após /place/
-        const placeMatch = url.match(/\/place\/([^\/]+)/);
-        if (placeMatch) {
-            const place = decodeURIComponent(placeMatch[1].replace(/\+/g, ' '));
-            return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place)}`;
-        }
-        // fallback: remove o prefixo intent:// e tenta usar o restante como HTTPS
-        let fallback = url.replace(/^intent:\/\//, 'https://');
-        // Remove sufixo #Intent;...
-        fallback = fallback.split('#Intent')[0];
-        return fallback;
-    }
-
-    // Converte whatsapp:// para https://wa.me/
-    function converterWhatsApp(url) {
-        // Exemplo: whatsapp://send?phone=5511999999999
-        const phoneMatch = url.match(/phone=(\d+)/);
-        if (phoneMatch) {
-            return `https://wa.me/${phoneMatch[1]}`;
-        }
-        return url;
-    }
-
-    // Corrige todos os links do DOM
-    function corrigirLinks() {
-        const links = document.querySelectorAll('a[href]');
-        links.forEach(link => {
-            let href = link.getAttribute('href');
-            if (!href) return;
-            if (href.startsWith('intent://')) {
-                const novoHref = converterIntentMapa(href);
-                link.setAttribute('href', novoHref);
-                // Se o link tiver target="_blank" sem necessidade, mantém
-            } else if (href.startsWith('whatsapp://')) {
-                const novoHref = converterWhatsApp(href);
-                link.setAttribute('href', novoHref);
-            }
-        });
-    }
-
-    // Intercepta cliques para links que por ventura não foram corrigidos (ex: gerados dinamicamente)
-    document.body.addEventListener('click', function(e) {
-        let target = e.target.closest('a');
-        if (!target) return;
-        let href = target.getAttribute('href');
-        if (!href) return;
-        if (href.startsWith('intent://')) {
-            e.preventDefault();
-            const novoHref = converterIntentMapa(href);
-            window.location.href = novoHref;
-        } else if (href.startsWith('whatsapp://')) {
-            e.preventDefault();
-            const novoHref = converterWhatsApp(href);
-            window.location.href = novoHref;
-        }
-    });
-
-    // Executa ao carregar e também quando o conteúdo interno for alterado (usando MutationObserver)
-    corrigirLinks();
-    const observer = new MutationObserver(function(mutations) {
-        corrigirLinks();
-    });
-    observer.observe(document.body, { childList: true, subtree: true });
-})();
-</script>
 </body>
 </html>
