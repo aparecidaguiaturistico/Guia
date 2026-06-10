@@ -11001,25 +11001,38 @@ function cliqueBanner(id) {
     alert("Você clicou no Banner do Patrocinador Premium " + id + "!");
 }
 
-// Compartilhamento Nativo
+// ==================== CÓDIGO DO NOVO SISTEMA DE COMPARTILHAMENTO ====================
 function compartilharApp() {
+    const link = window.location.href;
+    const titulo = 'Guia Turístico Aparecida';
+    const texto = 'Descubra pontos turísticos, hotéis, restaurantes e serviços em Aparecida com este App!';
+
     if (navigator.share) {
+        // Usa a API nativa de compartilhamento (mostra apps instalados: WhatsApp, Twitter, etc.)
         navigator.share({
-            title: 'Guia Turístico Aparecida',
-            text: 'Descubra pontos turísticos, hotéis, restaurantes e serviços em Aparecida com este App!',
-            url: window.location.href
-        }).catch(console.error);
+            title: titulo,
+            text: texto,
+            url: link
+        }).catch((error) => {
+            console.log('Erro ao compartilhar:', error);
+            // Fallback caso o usuário cancele ou ocorra erro
+            copiarLink(link);
+        });
     } else {
-        alert("Link do aplicativo copiado para a sua área de transferência!");
-        const tempInput = document.createElement("input");
-        tempInput.value = window.location.href;
-        document.body.appendChild(tempInput);
-        tempInput.select();
-        document.execCommand("copy");
-        document.body.removeChild(tempInput);
+        // Fallback para navegadores sem suporte à API
+        copiarLink(link);
     }
 }
 
+function copiarLink(link) {
+    const inputTemp = document.createElement("input");
+    inputTemp.value = link;
+    document.body.appendChild(inputTemp);
+    inputTemp.select();
+    document.execCommand("copy");
+    document.body.removeChild(inputTemp);
+    alert("Link do aplicativo copiado! ✅ Agora você pode colar onde quiser.");
+    }
 
     // Lógica para alternar as mensagens da Barra de Status
     let statusIndex = 0;
