@@ -11002,17 +11002,45 @@ function cliqueBanner(id) {
 }
 
 // Compartilhamento Nativo
-    function compartilharApp() {
-        if (navigator.share) {
-            navigator.share({
-            title: 'Guia Turístico Aparecida',
-            text: 'Descubra pontos turísticos, hotéis, restaurantes e serviços em Aparecida com este App!',
-            url: window.location.href
-            }).catch(console.error);
-        } else {
-            alert('Seu navegador não suporta compartilhamento nativo.');
-        }
+function compartilharApp() {
+    const url = window.location.href;
+    const titulo = 'Guia Turístico Aparecida';
+    const texto = 'Descubra pontos turísticos, hotéis, restaurantes e serviços em Aparecida com este App!';
+
+    // Tenta compartilhamento nativo (mais completo)
+    if (navigator.share) {
+        navigator.share({
+            title: titulo,
+            text: texto,
+            url: url
+        }).catch(err => {
+            if (err.name !== 'AbortError') {
+                copiarLinkFallback(url);
+            }
+        });
+    } else {
+        // Fallback para WebView / navegadores antigos
+        copiarLinkFallback(url);
     }
+}
+
+function copiarLinkFallback(url) {
+    // Tenta copiar usando a API de clipboard
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url).then(() => {
+            alert('Link copiado para a área de transferência!\nCompartilhe onde quiser.');
+        }).catch(() => {
+            fallbackManual(url);
+        });
+    } else {
+        fallbackManual(url);
+    }
+}
+
+function fallbackManual(url) {
+    // Último recurso: instrui o usuário
+    alert(`Compartilhamento automático não disponível. Copie o link manualmente:\n${url}`);
+}
 
 
     // Lógica para alternar as mensagens da Barra de Status
