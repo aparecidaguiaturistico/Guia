@@ -291,11 +291,12 @@
         /* Modal do Sistema de Avaliação */
         .modal {
             display: none;
-            position: fixed;
+            position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.5);
             align-items: center; justify-content: center;
             z-index: 1000; padding: 20px;
+            box-sizing: border-box;
         }
         .modal-content {
             background: white; padding: 25px; border-radius: 20px;
@@ -10761,6 +10762,12 @@ Localizado no pátio do Santuário Nacional, o Centro de Apoio ao Romeiro foi in
     });
 })();
 
+// Helper de depuração: rode listarIdsLocais() no console do navegador para ver
+// todos os ids válidos (o valor exato que deve ir no campo "localId" no Firebase).
+window.listarIdsLocais = function () {
+    console.table(paginas.map(p => ({ id: p.id, nome: p.nome })));
+};
+
 // Estado global da aplicação de 6 Categorias
 let categoriaAtual = null;
 let regiaoFiltro = null;
@@ -10835,13 +10842,29 @@ function atualizarBotaoCheckin(id) {
         : '<i class="far fa-circle"></i> Marcar como visitado';
 }
 
+// ==================== HELPERS DE MODAL (compatível com WebView de apps nativos) ====================
+// Em vez de depender de position:fixed (que alguns WebViews Android renderizam errado),
+// posicionamos o overlay manualmente no ponto de scroll atual e travamos o scroll do fundo.
+function abrirModalOverlay(id) {
+    const el = document.getElementById(id);
+    const scrollY = window.scrollY || window.pageYOffset || 0;
+    el.style.top = scrollY + "px";
+    el.style.height = window.innerHeight + "px";
+    el.style.display = "flex";
+    document.body.style.overflow = "hidden";
+}
+function fecharModalOverlay(id) {
+    document.getElementById(id).style.display = "none";
+    document.body.style.overflow = "";
+}
+
 function abrirModalPassaporte() {
     renderPassaporte();
-    document.getElementById("modalPassaporte").style.display = "flex";
+    abrirModalOverlay("modalPassaporte");
 }
 
 function fecharModalPassaporte() {
-    document.getElementById("modalPassaporte").style.display = "none";
+    fecharModalOverlay("modalPassaporte");
 }
 
 function renderPassaporte() {
@@ -10913,18 +10936,28 @@ function definirNotaComentario(nota) {
 }
 
 function carregarComentarios(id) {
+    // Log de depuração: compare este valor com o campo "localId" dos documentos no Firebase.
+    console.log('[comentarios] localId esperado para este local:', id);
+
+    // Sem orderBy no servidor -> não depende de índice composto no Firestore.
+    // A ordenação por data é feita aqui no navegador mesmo.
     db.collection("comentarios")
         .where("localId", "==", id)
-        .orderBy("criadoEm", "desc")
         .get()
         .then(snapshot => {
             const comentarios = snapshot.docs.map(d => d.data());
+            comentarios.sort((a, b) => {
+                const ta = a.criadoEm && a.criadoEm.toMillis ? a.criadoEm.toMillis() : 0;
+                const tb = b.criadoEm && b.criadoEm.toMillis ? b.criadoEm.toMillis() : 0;
+                return tb - ta;
+            });
+            console.log('[comentarios] documentos encontrados para', id, ':', comentarios.length);
             renderComentarios(comentarios);
         })
         .catch(err => {
             console.error("Erro ao carregar comentários:", err);
             const lista = document.getElementById("comentarios-lista");
-            if (lista) lista.innerHTML = '<p style="color:#999; font-size:13px;">Não foi possível carregar os comentários agora.</p>';
+            if (lista) lista.innerHTML = '<p style="color:#999; font-size:13px;">Não foi possível carregar os comentários agora. (' + (err && err.message ? err.message : 'erro desconhecido') + ')</p>';
         });
 }
 
@@ -10990,11 +11023,11 @@ function abrirCompartilhamento(texto, url) {
     document.getElementById("share-twitter").href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(texto)}&url=${encodeURIComponent(url)}`;
     document.getElementById("share-telegram").href = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(texto)}`;
     document.getElementById("btn-copiar-link").onclick = () => copiarLinkFallback(url);
-    document.getElementById("modalCompartilhar").style.display = "flex";
+    abrirModalOverlay("modalCompartilhar");
 }
 
 function fecharModalCompartilhar() {
-    document.getElementById("modalCompartilhar").style.display = "none";
+    fecharModalOverlay("modalCompartilhar");
 }
 
 // ==================== NOTIFICAÇÕES PUSH ====================
@@ -11346,11 +11379,11 @@ function abrirModalAvaliacao() {
     notaSelecionada = 0;
     const estrelas = document.querySelectorAll("#modalStars i");
     estrelas.forEach(s => s.classList.remove("active"));
-    document.getElementById("modalAvaliacao").style.display = "flex";
+    abrirModalOverlay("modalAvaliacao");
 }
 
 function fecharModalAvaliacao() {
-    document.getElementById("modalAvaliacao").style.display = "none";
+    fecharModalOverlay("modalAvaliacao");
 }
 
 function definirNota(nota) {
@@ -11378,7 +11411,13 @@ window.onload = function() {
     renderMenu();
     iniciarBannerRandomico();
 
-    if (firebaseConfigured && messaging && "Notification" in window && Notification.permission === "default") {
+    // Detecta se está rodando dentro de um WebView de app nativo (Kodular, etc).
+    // O Android WebView adiciona o marcador " wv" no user agent — assim garantimos
+    // que esse botão fica escondido dentro do app publicado, mesmo em versões de
+    // WebView que suportem parcialmente a API Notification.
+    const isWebViewApp = /wv\)/i.test(navigator.userAgent) || /; wv/i.test(navigator.userAgent);
+
+    if (!isWebViewApp && firebaseConfigured && messaging && "Notification" in window && Notification.permission === "default") {
         document.getElementById("btn-notificacoes").style.display = "flex";
     }
 };
