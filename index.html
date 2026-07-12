@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -88,70 +89,11 @@
         
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Botões de Contato (Personalizados) */
-        .contact-grid { display: grid; gap: 10px; margin-top: 20px; }
-        .btn-contact { padding: 15px; border-radius: 12px; color: white; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 600; transition: 0.2s; border: none; cursor: pointer; }
-        .bg-whatsapp { background: #25d366; }
-        .bg-phone { background: #3498db; }
-        .bg-email { background: #e74c3c; }
-
-        .btn-voltar { background: #fff; color: var(--primary); padding: 10px 20px; border-radius: 12px; border: none; font-weight: 600; margin-bottom: 15px; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-
-        .contact-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .btn-contact {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            padding: 14px 18px;
-            border-radius: 12px;
-            font-weight: 600;
-            text-decoration: none;
-            color: #fff;
-            font-size: 15px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            letter-spacing: 0.5px;
-        }
-
-        .btn-contact i {
-            font-size: 18px;
-        }
-
-        .bg-whatsapp {
-            background: linear-gradient(135deg, #25D366, #1ebe5d);
-        }
-
-        .bg-phone {
-            background: linear-gradient(135deg, #007BFF, #0056d2);
-        }
-
-        .bg-email {
-            background: linear-gradient(135deg, #ff5e57, #e04842);
-        }
-
-        .btn-contact:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.25);
-            filter: brightness(1.05);
-        }
-
-        .btn-contact:active {
-            transform: scale(0.97);
-            box-shadow: 0 3px 8px rgba(0,0,0,0.2);
-        }
-
+        /* Botões de Contato (Personalizados) - regras únicas (o resto foi consolidado mais abaixo) */
+        .btn-contact i { font-size: 18px; }
+        .btn-contact:active { transform: scale(0.97); box-shadow: 0 3px 8px rgba(0,0,0,0.2); }
         @media (max-width: 480px) {
-            .btn-contact {
-                font-size: 14px;
-                padding: 12px;
-            }
+            .btn-contact { font-size: 14px; padding: 12px; }
         }
 
         /* Banner Rotativo Moderno (Topo) */
@@ -273,8 +215,11 @@
         }
         .btn-action:hover { background: #f8f9fa; transform: translateY(-2px); }
         .btn-share { color: #0d6efd; }
+        .btn-passport { color: #9b59b6; }
         .btn-rate { color: #ffc107; }
         .btn-install { color: #28a745; }
+        #btn-checkin { color: #555; }
+        #btn-checkin.checkin-feito { color: #25D366; background: #e9f9ee; }
 
         /* Sistema de Modo Noturno */
         .dark-mode-toggle {
@@ -379,7 +324,7 @@
         .bg-phone { background: linear-gradient(135deg, #007BFF, #0056d2); }
         .bg-email { background: linear-gradient(135deg, #ff5e57, #e04842); }
         .bg-map { background: linear-gradient(135deg, #f1c40f, #f39c12); }
-        .btn-contact:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.25); }
+        .btn-contact:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.25); filter: brightness(1.05); }
 
         .btn-voltar { 
             background: #fff; color: var(--primary); padding: 12px 15px; 
@@ -393,7 +338,7 @@
 <body>
 
 <header>
-    <img src="https://img.estadao.com.br/thumbs/550/resources/jpg/7/0/1507409231807.jpg">
+    <img src="https://img.estadao.com.br/thumbs/550/resources/jpg/7/0/1507409231807.jpg" alt="Santuário Nacional de Aparecida">
 </header>
 
 <div class="container">
@@ -432,12 +377,31 @@
         <button class="btn-action btn-share" onclick="compartilharApp()">
             <i class="fas fa-share-alt"></i> Compartilhar
         </button>
+        <button class="btn-action btn-passport" onclick="abrirModalPassaporte()">
+            <i class="fas fa-stamp"></i> Meu Passaporte
+        </button>
         <button class="btn-action btn-rate" onclick="abrirModalAvaliacao()">
             <i class="fas fa-star"></i> Avaliar App
         </button>
         <button class="btn-action btn-install" id="installButton" style="display:none;">
             <i class="fas fa-download"></i> Instalar App
         </button>
+    </div>
+
+    <div id="modalPassaporte" class="modal">
+        <div class="modal-content">
+            <h3 style="margin-top:0;"><i class="fas fa-stamp"></i> Passaporte do Peregrino</h3>
+            <p style="font-size:14px; color:#666;">Marque como visitado cada lugar que você conhecer e colecione todos os carimbos!</p>
+            <div id="passaporte-progresso-wrap" style="background:#eee; border-radius:20px; height:14px; overflow:hidden; margin:15px 0 5px;">
+                <div id="passaporte-progresso-barra" style="background:linear-gradient(135deg,#25D366,#1ebe5d); height:100%; width:0%; transition:width .4s;"></div>
+            </div>
+            <p id="passaporte-progresso-texto" style="font-size:13px; color:#555; margin:0 0 15px;">0 de 0 visitados</p>
+            <div id="passaporte-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(70px,1fr)); gap:10px; max-height:260px; overflow-y:auto; text-align:left;"></div>
+            <button id="passaporte-btn-compartilhar" class="btn-submit-rate" style="display:none;" onclick="compartilharPassaporte()">
+                <i class="fas fa-share-alt"></i> Compartilhar minha conquista
+            </button>
+            <p onclick="fecharModalPassaporte()" style="margin-top:15px; margin-bottom:0; font-size:13px; color:#999; cursor:pointer; text-decoration:underline;">Fechar</p>
+        </div>
     </div>
 
     <div id="modalAvaliacao" class="modal">
@@ -455,6 +419,35 @@
             <p onclick="fecharModalAvaliacao()" style="margin-top:15px; margin-bottom:0; font-size:13px; color:#999; cursor:pointer; text-decoration:underline;">Agora não</p>
         </div>
     </div>
+
+    <div id="modalCompartilhar" class="modal">
+        <div class="modal-content">
+            <h3 style="margin-top:0;"><i class="fas fa-share-alt"></i> Compartilhar</h3>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:15px;">
+                <a id="share-whatsapp" target="_blank" rel="noopener" style="background:#25D366; color:#fff; text-decoration:none; padding:12px; border-radius:12px; display:flex; align-items:center; justify-content:center; gap:8px; font-weight:600; font-size:14px;">
+                    <i class="fab fa-whatsapp"></i> WhatsApp
+                </a>
+                <a id="share-facebook" target="_blank" rel="noopener" style="background:#1877f2; color:#fff; text-decoration:none; padding:12px; border-radius:12px; display:flex; align-items:center; justify-content:center; gap:8px; font-weight:600; font-size:14px;">
+                    <i class="fab fa-facebook-f"></i> Facebook
+                </a>
+                <a id="share-twitter" target="_blank" rel="noopener" style="background:#000; color:#fff; text-decoration:none; padding:12px; border-radius:12px; display:flex; align-items:center; justify-content:center; gap:8px; font-weight:600; font-size:14px;">
+                    <i class="fab fa-x-twitter"></i> X
+                </a>
+                <a id="share-telegram" target="_blank" rel="noopener" style="background:#0088cc; color:#fff; text-decoration:none; padding:12px; border-radius:12px; display:flex; align-items:center; justify-content:center; gap:8px; font-weight:600; font-size:14px;">
+                    <i class="fab fa-telegram-plane"></i> Telegram
+                </a>
+                <button id="btn-copiar-link" style="grid-column:1 / -1; background:#f1f1f1; color:#444; border:none; padding:12px; border-radius:12px; display:flex; align-items:center; justify-content:center; gap:8px; font-weight:600; font-size:14px; cursor:pointer;">
+                    <i class="fas fa-link"></i> Copiar link
+                </button>
+            </div>
+            <p onclick="fecharModalCompartilhar()" style="margin-top:15px; margin-bottom:0; font-size:13px; color:#999; cursor:pointer; text-decoration:underline;">Fechar</p>
+        </div>
+    </div>
+
+    <button id="btn-notificacoes" onclick="ativarNotificacoes()"
+            style="display:none; width:100%; background:#fff3cd; color:#856404; border:none; padding:10px; border-radius:12px; font-weight:600; font-size:13px; margin-bottom:15px; cursor:pointer; align-items:center; justify-content:center; gap:8px;">
+        <i class="fas fa-bell"></i> Ativar notificações de eventos e horários
+    </button>
 
     <!-- Bloco Fixo de Monetização do Rodapé Estilo AdSense -->
     <div class="adsense-footer">
@@ -486,7 +479,42 @@
     </div>
 </div>
 
+<!-- Firebase (avaliações/comentários + notificações push) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js"></script>
+
 <script>
+// ==================== FIREBASE (avaliações, comentários e notificações push) ====================
+// 1) Cole aqui as chaves do seu projeto Firebase (Configurações do projeto > Geral > Seus apps > SDK).
+// 2) Cole também sua Chave VAPID (Configurações do projeto > Cloud Messaging > Certificados push web).
+// 3) Enquanto isso não for preenchido, o app funciona normalmente e essas seções ficam ocultas — nada quebra.
+const firebaseConfig = {
+    apiKey: "AIzaSyDNw3NFYFKSeYgGlB9eP_x8YVxfyu17Evs",
+    authDomain: "appguia-7a3a7.firebaseapp.com",
+    projectId: "appguia-7a3a7",
+    storageBucket: "appguia-7a3a7.firebasestorage.app",
+    messagingSenderId: "945249750199",
+    appId: "1:945249750199:web:a2efaa2f3db1a06ba39132"
+};
+const FIREBASE_VAPID_KEY = "BOfe5x7ciaKdW-j693-YuSmTaaxZ5SrXFPd1Kz8iA-0UZRGu-q__esFduxUEhCu82z3U9M-mwfwkHIMIkWDllCM";
+
+const firebaseConfigured = !!(firebaseConfig.apiKey && !firebaseConfig.apiKey.startsWith("COLE_AQUI"));
+let db = null;
+let messaging = null;
+
+if (firebaseConfigured) {
+    firebase.initializeApp(firebaseConfig);
+    db = firebase.firestore();
+    if ('serviceWorker' in navigator && 'PushManager' in window) {
+        try { messaging = firebase.messaging(); } catch (e) {
+            console.warn("Firebase Messaging não disponível neste navegador:", e);
+        }
+    }
+} else {
+    console.warn("Firebase ainda não configurado: preencha firebaseConfig no início do script para ativar avaliações, comentários e notificações push.");
+}
+
 // ==================== PWA - Manifest e Service Worker Dinâmicos ====================
 (function() {
     // 1. Criar o manifesto (JSON) como um blob URL
@@ -585,7 +613,7 @@ const paginas = [
         regiao: "Próximos à Basílica Nova",
         abertura: 10, fechamento: 16,
         html: `<h3>Restaurante Exemplo - Self Service</h3>
-        <div class="content-header"><img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=500"></div>
+        <div class="content-header"><img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=500" loading="lazy" alt="Restaurante - Self Service"></div>
         <p>Cardápio variado, ideal para almoço de famílias e caravanas de excursão.</p>`
     },
     {
@@ -594,7 +622,7 @@ const paginas = [
         regiao: "No Centro",
         abertura: 11, fechamento: 23,
         html: `<h3>Churrascaria Tradicional Aparecida</h3>
-        <div class="content-header"><img src="https://images.unsplash.com/photo-1544025162-d76694265947?w=500"></div>
+        <div class="content-header"><img src="https://images.unsplash.com/photo-1544025162-d76694265947?w=500" loading="lazy" alt="Churrascaria Tradicional Aparecida"></div>
         <p>Cortes de carnes nobres e rodízio completo para o jantar dos peregrinos.</p>`
     },
     {
@@ -603,7 +631,7 @@ const paginas = [
         regiao: "No Centro",
         abertura: 18, fechamento: 23,
         html: `<h3>Pizzaria Forno a Lenha</h3>
-        <div class="content-header"><img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500"></div>
+        <div class="content-header"><img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500" loading="lazy" alt="Pizzaria Forno a Lenha Exemplo"></div>
         <p>Ambiente familiar perfeito para a noite em Aparecida.</p>`
     },
     {
@@ -612,7 +640,7 @@ const paginas = [
         regiao: "Próximos à Passarela",
         abertura: 7, fechamento: 22,
         html: `<h3>Lanchonete e Pastelaria da Fé</h3>
-        <div class="content-header"><img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500"></div>
+        <div class="content-header"><img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500" loading="lazy" alt="Lanchonete e Pastelaria da Fé"></div>
         <p>Salgados quentes, sucos e lanches rápidos para a sua caminhada.</p>`
     },
     // --- CADASTROS EXCLUSIVOS PARA A NOVA CATEGORIA: NÚMEROS ÚTEIS ---
@@ -665,7 +693,7 @@ const paginas = [
         regiao: "Próximos à Basílica Nova",
         abertura: 0, fechamento: 24, // Recepção 24h
         html: `<h3>Hotel Pousada Dona Ana</h3>
-        <div class="content-header"><img src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/820301325.jpg?k=2d8e7b4d9ca21925a16671df37494be6ae355c5e92f5f752a6cfb471fb6b385f&o=" alt="Hotel Pousada Dona Ana - Aparecida"></div>
+        <div class="content-header"><img src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/820301325.jpg?k=2d8e7b4d9ca21925a16671df37494be6ae355c5e92f5f752a6cfb471fb6b385f&o=" alt="Hotel Pousada Dona Ana - Aparecida" loading="lazy"></div>
         <p><b>Endereço:</b> Rua Joaquina Prado, 276 - Aparecida/SP, CEP 12570-000.</p>
         <p><b>Localização:</b> A menos de 1 km do Santuário Nacional e próximo à Rodoviária de Aparecida.</p>
         <p>Pousada confortável com quartos para famílias, banheiro privativo, ar-condicionado, varanda com vista da cidade, TV e ventilador de teto. Conta com terraço, jardim, cozinha compartilhada, sala de estar e salas de reunião.</p>
@@ -697,7 +725,7 @@ const paginas = [
         regiao: "Próximos à Passarela",
         abertura: 6, fechamento: 23,
         html: `<h3>Pousada Perto da Passarela</h3>
-        <div class="content-header"><img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=500"></div>
+        <div class="content-header"><img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=500" loading="lazy" alt="Pousada Perto da Passarela"></div>
         <p><b>Localização:</b> Próximos à Passarela.</p>
         <p>Hospedagem ideal para quem deseja cruzar a passarela da fé a pé rumo à Basílica Velha.</p>`
     },
@@ -707,7 +735,7 @@ const paginas = [
         regiao: "No Centro",
         abertura: 0, fechamento: 24,
         html: `<h3>Hotel no Centro Histórico</h3>
-        <div class="content-header"><img src="https://images.unsplash.com/photo-1540541338287-41700207dee6?w=500"></div>
+        <div class="content-header"><img src="https://images.unsplash.com/photo-1540541338287-41700207dee6?w=500" loading="lazy" alt="Hotel no Centro Histórico"></div>
         <p><b>Localização:</b> No Centro.</p>
         <p>Conforto e comércio local integrado no coração de Aparecida.</p>`
     },
@@ -718,7 +746,7 @@ const paginas = [
         cat: "Lazer",
         abertura: 8, fechamento: 17,
         html: `<h3>Bondinhos Aéreos - Aparecida</h3>
-        <div class="content-header"><img src="https://images.unsplash.com/photo-1578894381163-e72c17f2d45f?w=500"></div>
+        <div class="content-header"><img src="https://images.unsplash.com/photo-1578894381163-e72c17f2d45f?w=500" loading="lazy" alt="Passeio de Bondinho Aéreo"></div>
         <p>Uma experiência panorâmica incrível ligando o Santuário Nacional ao Morro do Cruzeiro.</p>
         <div class="contact-grid">
             <a href="https://api.whatsapp.com/send?phone=5512999999999" class="btn-contact bg-whatsapp"><i class="fab fa-whatsapp"></i> INFORMAÇÕES</a>
@@ -743,7 +771,7 @@ const paginas = [
         nome: "Sobre o Guia",
         cat: "Informação",
         html: `
-            <div class="content-header"><img src="https://img.jornaldealagoas.com.br/ae8gMc5Lr6vKJ1GSq6Yzj3oZT7Q=/840x520/smart/s3.jornaldealagoas.com.br/uploads/imagens/2335427.jpg"></div>
+            <div class="content-header"><img src="https://img.jornaldealagoas.com.br/ae8gMc5Lr6vKJ1GSq6Yzj3oZT7Q=/840x520/smart/s3.jornaldealagoas.com.br/uploads/imagens/2335427.jpg" loading="lazy" alt="Sobre o Guia"></div>
             <span class="badge">Apresentação</span>
             <h3>Bem-vindo a Aparecida</h3>
             <p>Este aplicativo foi desenvolvido para facilitar a localização dos principais pontos turísticos da Capital Mariana do Brasil.</p>`
@@ -752,7 +780,7 @@ const paginas = [
         nome: "Anuncie Aqui",
         cat: "Publicidade",
         html: `
-            <div class="content-header"><img src="https://1.bp.blogspot.com/-JImfzb1nWOg/X9Bp5PFZl1I/AAAAAAAAGEM/cYb5o03rZLs1Ydq4Z0-shoTdFLXM1fsmACLcBGAsYHQ/s389/Anuncie%2Baqui.png"></div>
+            <div class="content-header"><img src="https://1.bp.blogspot.com/-JImfzb1nWOg/X9Bp5PFZl1I/AAAAAAAAGEM/cYb5o03rZLs1Ydq4Z0-shoTdFLXM1fsmACLcBGAsYHQ/s389/Anuncie%2Baqui.png" loading="lazy" alt="Anuncie Aqui"></div>
             <center>
                 <h3>Divulgue sua marca!</h3>
                 <p>Apareça para milhares de turistas que visitam nossa cidade todos os meses.</p>
@@ -765,7 +793,7 @@ const paginas = [
     { nome: "Bondinhos Aéreos", cat: "Turismo", html: `<h3>Bondinhos Aéreos</h3><p>
 
   <div class="content-header">
-<img src="https://upload.wikimedia.org/wikipedia/commons/7/77/Bondinho_de_Aparecida_SP_com_a_bas%C3%ADlica_e_a_cidade_ao_fundo.JPG?utm_source=pt.wikipedia.org&utm_campaign=index&utm_content=original">
+<img src="https://upload.wikimedia.org/wikipedia/commons/7/77/Bondinho_de_Aparecida_SP_com_a_bas%C3%ADlica_e_a_cidade_ao_fundo.JPG?utm_source=pt.wikipedia.org&utm_campaign=index&utm_content=original" loading="lazy" alt="Bondinhos Aéreos">
 </div>
 
 
@@ -1132,7 +1160,7 @@ const paginas = [
 
 
   <div class="content-header">
-<img src="https://images.a12.com/source/files/c/181908/Caminho_do_Rosario-395137_1920-566-0-0.png">
+<img src="https://images.a12.com/source/files/c/181908/Caminho_do_Rosario-395137_1920-566-0-0.png" loading="lazy" alt="Caminho do Rosário & Trem do Devoto">
 </div>
 
 
@@ -1616,7 +1644,7 @@ const paginas = [
 
 
 <div class="content-header">
-<img src="https://4.bp.blogspot.com/-ChyYh8CtUJs/WXy7hTwPyVI/AAAAAAABbXM/viiJmC-rIkY7gJtfFqlBallhPd8P9RHcwCLcBGAs/s1600/sinos%2B6.jpg">
+<img src="https://4.bp.blogspot.com/-ChyYh8CtUJs/WXy7hTwPyVI/AAAAAAABbXM/viiJmC-rIkY7gJtfFqlBallhPd8P9RHcwCLcBGAs/s1600/sinos%2B6.jpg" loading="lazy" alt="Campanário">
 </div>
 
 <style>
@@ -1942,7 +1970,7 @@ const paginas = [
     { nome: "Capela das Velas", cat: "Religioso", html: `<h3>Capela das Velas</h3><p>
 
 <div class="content-header">
-<img src="https://i.imgur.com/fzWNtwr.jpeg">
+<img src="https://i.imgur.com/fzWNtwr.jpeg" loading="lazy" alt="Capela das Velas">
 </div>
 
 <style>
@@ -2287,7 +2315,7 @@ const paginas = [
     { nome: "Capela Ressureição", cat: "Religioso", html: `<h3>Capela Ressureição</h3><p>
 
 <div class="content-header">
-<img src="https://i.imgur.com/Cq2ym98.jpeg">
+<img src="http://s3.amazonaws.com/portala12/source/files/c/104192/723-483-0-0.jpg" loading="lazy" alt="Capela Ressureição">
 </div>
 
 <style>
@@ -2633,7 +2661,7 @@ const paginas = [
     { nome: "Capela do Santíssimo", cat: "Religioso", html: `<h3>Capela Santíssimo</h3><p>
 
 <div class="content-header">
-<img src="https://i.imgur.com/uQ7FPRK.jpeg">
+<img src="http://s3.amazonaws.com/portala12/source/files/c/26752/724-483-0-0.jpg" loading="lazy" alt="Capela do Santíssimo">
 </div>
 
 <style>
@@ -2979,7 +3007,7 @@ const paginas = [
     { nome: "Capela São José", cat: "Religioso", html: `<h3>Capela São José</h3><p>
 
 <div class="content-header">
-<img src="https://i.imgur.com/CGRDMRs.jpeg">
+<img src="http://s3.amazonaws.com/portala12/source/files/c/26678/724-483-0-0.jpg" loading="lazy" alt="Capela São José">
 </div>
 
 
@@ -3324,7 +3352,7 @@ const paginas = [
 </center>
 
 <br></p>` },
-    { nome: "Centro de Apoio ao Romeiro", cat: "Serviços", html: `<h3>Centro de Apoio ao Romeiro</h3><p><img src="https://images.a12.com/source/files/c/179799/Natal_CAR_2018-451333_725-483-0-0.jpg" width="100%;" height="270"></a>
+    { nome: "Centro de Apoio ao Romeiro", cat: "Serviços", html: `<h3>Centro de Apoio ao Romeiro</h3><p><img src="https://images.a12.com/source/files/c/179799/Natal_CAR_2018-451333_725-483-0-0.jpg" width="100%;" height="270" loading="lazy" alt="Centro de Apoio ao Romeiro"></a>
 
   
 
@@ -3718,7 +3746,7 @@ Localizado no pátio do Santuário Nacional, o Centro de Apoio ao Romeiro foi in
 <p><a href="https://goo.gl/maps/gPgWXJG38sP2" class="btn-contact bg-map" target="_blank"><i class="fas fa-map-marker-alt"></i> VER NO MAPA</a></p>
 </center>
 </p>` },
-    { nome: "Cidade do Romeiro", cat: "Lazer", html: `<h3>Cidade do Romeiro</h3><p><img src="http://s3.amazonaws.com/portala12/source/files/c/104200/723-483-0-0.jpg" width="100%;" height="270"></a>
+    { nome: "Cidade do Romeiro", cat: "Lazer", html: `<h3>Cidade do Romeiro</h3><p><img src="http://s3.amazonaws.com/portala12/source/files/c/104200/723-483-0-0.jpg" width="100%;" height="270" loading="lazy" alt="Cidade do Romeiro"></a>
 
   
 
@@ -4064,7 +4092,7 @@ Localizado no pátio do Santuário Nacional, o Centro de Apoio ao Romeiro foi in
 <p><a href="tel:1231041010" class="btn-contact bg-whatsapp"><i class="fas fa-phone-alt"></i> LIGAR AGORA</a></p>
 <p><a href="https://goo.gl/maps/vjBNDbryCQF2" class="btn-contact bg-map" target="_blank"><i class="fas fa-map-marker-alt"></i> VER NO MAPA</a></p>
 </center></p>` },
-    { nome: "Visitação a Cúpula", cat: "Turismo", html: `<h3>Visitação a Cúpula</h3><p><img src="https://images.a12.com/source/files/c/157430/MEMORIAL_DOS_CONSTRUTORES_1024-320-0-0.jpg" width="100%;" height="270"></a>
+    { nome: "Visitação a Cúpula", cat: "Turismo", html: `<h3>Visitação a Cúpula</h3><p><img src="https://images.a12.com/source/files/c/157430/MEMORIAL_DOS_CONSTRUTORES_1024-320-0-0.jpg" width="100%;" height="270" loading="lazy" alt="Visitação a Cúpula"></a>
 
   
 
@@ -4410,7 +4438,7 @@ Localizado no pátio do Santuário Nacional, o Centro de Apoio ao Romeiro foi in
 <p><a href="tel:1231043403" class="btn-contact bg-whatsapp"><i class="fas fa-phone-alt"></i> LIGAR AGORA</a></p>
 <p><a href="https://goo.gl/maps/gPgWXJG38sP2" class="btn-contact bg-map" target="_blank"><i class="fas fa-map-marker-alt"></i> VER NO MAPA</a></p>
 </center></p>` },
-    { nome: "Memorial dos Devotos", cat: "Museu", html: `<h3>Memorial dos Devotos</h3><p><img src="https://images.a12.com/source/files/c/150844/memorial_da_devocao_2_800-534-0-0.jpg" width="100%;" height="270"></a>
+    { nome: "Memorial dos Devotos", cat: "Museu", html: `<h3>Memorial dos Devotos</h3><p><img src="https://images.a12.com/source/files/c/150844/memorial_da_devocao_2_800-534-0-0.jpg" width="100%;" height="270" loading="lazy" alt="Memorial dos Devotos"></a>
 
  
 
@@ -4754,7 +4782,7 @@ Localizado no pátio do Santuário Nacional, o Centro de Apoio ao Romeiro foi in
 <p><a href="tel:1231043536" class="btn-contact bg-whatsapp"><i class="fas fa-phone-alt"></i> LIGAR AGORA</a></p>
 <p><a href="https://goo.gl/maps/gPgWXJG38sP2" class="btn-contact bg-map" target="_blank"><i class="fas fa-map-marker-alt"></i> VER NO MAPA</a></p>
 </center></p>` },
-    { nome: "Mirante", cat: "Turismo", html: `<h3>Mirante</h3><p><img src="https://i.imgur.com/cLRpaIp.jpg" width="100%;" height="270"></a>
+    { nome: "Mirante", cat: "Turismo", html: `<h3>Mirante</h3><p><img src="https://i.imgur.com/cLRpaIp.jpg" width="100%;" height="270" loading="lazy" alt="Mirante"></a>
 
  
 
@@ -5101,7 +5129,7 @@ Localizado no pátio do Santuário Nacional, o Centro de Apoio ao Romeiro foi in
 <p><a href="tel:1231041569" class="btn-contact bg-whatsapp"><i class="fas fa-phone-alt"></i> LIGAR AGORA</a></p>
 <p><a href="https://goo.gl/maps/gPgWXJG38sP2" class="btn-contact bg-map" target="_blank"><i class="fas fa-map-marker-alt"></i> VER NO MAPA</a></p>
 </center></p>` },
-    { nome: "Monumento 300 Anos", cat: "Monumento", html: `<h3>Monumento 300 Anos</h3><p><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQMT3ZtWeJy0tSzyBgR0VAozuY2XtMUMQOiF0R7PBJKLjZx5x8KNfCJ3Jy3&s=10" width="100%;" height="270"></a>
+    { nome: "Monumento 300 Anos", cat: "Monumento", html: `<h3>Monumento 300 Anos</h3><p><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQMT3ZtWeJy0tSzyBgR0VAozuY2XtMUMQOiF0R7PBJKLjZx5x8KNfCJ3Jy3&s=10" width="100%;" height="270" loading="lazy" alt="Monumento 300 Anos"></a>
 
   
 
@@ -5446,7 +5474,7 @@ Localizado no pátio do Santuário Nacional, o Centro de Apoio ao Romeiro foi in
 <p><a href="http://www.a12.com/santuario" class="btn-contact bg-phone" target="_blank"><i class="fas fa-globe"></i> VISITAR SITE</a></p>
 <p><a href="https://goo.gl/maps/gPgWXJG38sP2" class="btn-contact bg-map" target="_blank"><i class="fas fa-map-marker-alt"></i> VER NO MAPA</a></p>
 </center></p>` },
-    { nome: "Morro do Cruzeiro", cat: "Religioso", html: `<h3>Morro do Cruzeiro</h3><p><img src="https://images.a12.com/source/files/c/163751/Morro_do_Cruzeiro_-_Via_Sacra_9_724-483-0-0.jpg" width="100%;" height="270"></a>
+    { nome: "Morro do Cruzeiro", cat: "Religioso", html: `<h3>Morro do Cruzeiro</h3><p><img src="https://images.a12.com/source/files/c/163751/Morro_do_Cruzeiro_-_Via_Sacra_9_724-483-0-0.jpg" width="100%;" height="270" loading="lazy" alt="Morro do Cruzeiro"></a>
 
  
 
@@ -5793,7 +5821,7 @@ Localizado no pátio do Santuário Nacional, o Centro de Apoio ao Romeiro foi in
 <p><a href="tel:1231041000" class="btn-contact bg-whatsapp"><i class="fas fa-phone-alt"></i> LIGAR AGORA</a></p>
 <p><a href="https://goo.gl/maps/eJrmCRDU81m" class="btn-contact bg-map" target="_blank"><i class="fas fa-map-marker-alt"></i> VER NO MAPA</a></p>
 </center></p>` },
-    { nome: "Museu N. Sra Aparecida", cat: "Museu", html: `<h3>Museu N. Sra Aparecida</h3><p><img src="https://irfranciscanas.org.br/wp-content/uploads/2018/02/Santuario-de-Aparecida-Museu-Nossa-Senhora-Aparecida.jpg" width="100%;" height="270"></a>
+    { nome: "Museu N. Sra Aparecida", cat: "Museu", html: `<h3>Museu N. Sra Aparecida</h3><p><img src="https://irfranciscanas.org.br/wp-content/uploads/2018/02/Santuario-de-Aparecida-Museu-Nossa-Senhora-Aparecida.jpg" width="100%;" height="270" loading="lazy" alt="Museu N. Sra Aparecida"></a>
 
   
 
@@ -6235,7 +6263,7 @@ Localizado no pátio do Santuário Nacional, o Centro de Apoio ao Romeiro foi in
 <p><a href="tel:1231041000" class="btn-contact bg-whatsapp"><i class="fas fa-phone-alt"></i> LIGAR AGORA</a></p>
 <p><a href="https://goo.gl/maps/gPgWXJG38sP2" class="btn-contact bg-map" target="_blank"><i class="fas fa-map-marker-alt"></i> VER NO MAPA</a></p>
 </center></p>` },
-    { nome: "Porto Itaguaçu", cat: "Histórico", html: `<h3>Porto Itaguaçu</h3><p><img src="https://rohedamahotel.com.br/wp-content/uploads/2017/06/porto-itaguassu-aparecida.jpg" width="100%;" height="270"></a>
+    { nome: "Porto Itaguaçu", cat: "Histórico", html: `<h3>Porto Itaguaçu</h3><p><img src="https://rohedamahotel.com.br/wp-content/uploads/2017/06/porto-itaguassu-aparecida.jpg" width="100%;" height="270" loading="lazy" alt="Porto Itaguaçu"></a>
 
   
 
@@ -6676,7 +6704,7 @@ Localizado no pátio do Santuário Nacional, o Centro de Apoio ao Romeiro foi in
 <p><a href="https://goo.gl/maps/bVRAcnGWUY62" class="btn-contact bg-map" target="_blank"><i class="fas fa-map-marker-alt"></i> VER NO MAPA</a></p>
 </center>
 </p>` },
-    { nome: "Presépio Permanente Santuário Nacional", cat: "Religioso", html: `<h3>Presépio Permanente Santuário Nacional</h3><p><img src="https://www.kaireturismo.com.br/wp-content/uploads/2022/02/Presepio-de-Aparecida-18.png" width="100%;" height="270"></a>
+    { nome: "Presépio Permanente Santuário Nacional", cat: "Religioso", html: `<h3>Presépio Permanente Santuário Nacional</h3><p><img src="https://www.kaireturismo.com.br/wp-content/uploads/2022/02/Presepio-de-Aparecida-18.png" width="100%;" height="270" loading="lazy" alt="Presépio Permanente Santuário Nacional"></a>
 
   
 
@@ -7113,7 +7141,7 @@ Localizado no pátio do Santuário Nacional, o Centro de Apoio ao Romeiro foi in
         </div>
 
 </center></p>` },
-    { nome: "Sala das Promessas", cat: "Religioso", html: `<h3>Sala das Promessas</h3><p> <img src="https://images.a12.com/source/files/c/1197/sala_das_promessas_7_1_724-483-0-0.jpg" width="100%;" height="270"></a>
+    { nome: "Sala das Promessas", cat: "Religioso", html: `<h3>Sala das Promessas</h3><p> <img src="https://images.a12.com/source/files/c/1197/sala_das_promessas_7_1_724-483-0-0.jpg" width="100%;" height="270" loading="lazy" alt="Sala das Promessas"></a>
 
   
 
@@ -7460,7 +7488,7 @@ Localizado no pátio do Santuário Nacional, o Centro de Apoio ao Romeiro foi in
 <p><a href="tel:1231041604" class="btn-contact bg-whatsapp"><i class="fas fa-phone-alt"></i> LIGAR AGORA</a>
 <p><a href="https://goo.gl/maps/gPgWXJG38sP2" class="btn-contact bg-map" target="_blank"><i class="fas fa-map-marker-alt"></i> VER NO MAPA</a></p>
 </center></p>` },
-    { nome: "Santuário Nacional", cat: "Religioso", html: `<h3>Santuário Nacional</h3><p><img src="https://media.istockphoto.com/id/1133896269/pt/foto/aerial-view-of-the-sanctuary-of-nossa-senhora-aparecida-aparecida-sao-paulo-brazil-patroness.jpg?s=170667a&w=0&k=20&c=w1zWJIcLvQ7tt3r_8hWzT4nLnoZ_nh6rCmsgXKHQIyQ=" width="100%;" height="270"></a>
+    { nome: "Santuário Nacional", cat: "Religioso", html: `<h3>Santuário Nacional</h3><p><img src="https://media.istockphoto.com/id/1133896269/pt/foto/aerial-view-of-the-sanctuary-of-nossa-senhora-aparecida-aparecida-sao-paulo-brazil-patroness.jpg?s=170667a&w=0&k=20&c=w1zWJIcLvQ7tt3r_8hWzT4nLnoZ_nh6rCmsgXKHQIyQ=" width="100%;" height="270" loading="lazy" alt="Santuário Nacional"></a>
 
  
 <br>
@@ -7809,7 +7837,7 @@ Localizado no pátio do Santuário Nacional, o Centro de Apoio ao Romeiro foi in
 <p><a href="https://goo.gl/maps/gPgWXJG38sP2" class="btn-contact bg-map" target="_blank"><i class="fas fa-map-marker-alt"></i> VER NO MAPA</a></p>
 </center>
 </p>` },
-    { nome: "Tribuna Bento XVI", cat: "Religioso", html: `<h3>Tribuna Bento XVI</h3><p> <img src="https://i.imgur.com/VMivF0K.jpg" width="100%;" height="270"></a>
+    { nome: "Tribuna Bento XVI", cat: "Religioso", html: `<h3>Tribuna Bento XVI</h3><p> <img src="https://i.imgur.com/VMivF0K.jpg" width="100%;" height="270" loading="lazy" alt="Tribuna Bento XVI"></a>
 
  
 
@@ -8151,11 +8179,11 @@ Localizado no pátio do Santuário Nacional, o Centro de Apoio ao Romeiro foi in
     </div>
 
 <p><a href="http://www.a12.com/santuario" class="btn-contact bg-phone" target="_blank"><i class="fas fa-globe"></i> VISITAR SITE</a></p>
-<p><a href="tel:1231041000"><img src="https://i.imgur.com/uqpCKQZ.png" width="300px;" height="70"></p>
+<p><a href="tel:1231041000"><img src="https://i.imgur.com/uqpCKQZ.png" width="300px;" height="70" loading="lazy" alt="Tribuna Bento XVI"></p>
 <p><a href="https://goo.gl/maps/gPgWXJG38sP2" class="btn-contact bg-map" target="_blank"><i class="fas fa-map-marker-alt"></i> VER NO MAPA</a></p>
 </center>
 ` },
-    { nome: "Tribuna Dom Aloísio Lorscheider", cat: "Religioso", html: `<h3>Tribuna Dom Aloísio Lorscheider</h3><p><img src="https://www.a12.com/source/files/originals/Tribuna_Dom_Aloisio_Lorscheider.jpg" width="100%;" height="270"></a>
+    { nome: "Tribuna Dom Aloísio Lorscheider", cat: "Religioso", html: `<h3>Tribuna Dom Aloísio Lorscheider</h3><p><img src="https://www.a12.com/source/files/originals/Tribuna_Dom_Aloisio_Lorscheider.jpg" width="100%;" height="270" loading="lazy" alt="Tribuna Dom Aloísio Lorscheider"></a>
 
   
 
@@ -8500,7 +8528,7 @@ Localizado no pátio do Santuário Nacional, o Centro de Apoio ao Romeiro foi in
 <p><a href="tel:1231041000" class="btn-contact bg-whatsapp"><i class="fas fa-phone-alt"></i> LIGAR AGORA</a></p>
 <p><a href="https://goo.gl/maps/gPgWXJG38sP2" class="btn-contact bg-map" target="_blank"><i class="fas fa-map-marker-alt"></i> VER NO MAPA</a></p>
 </center>` },
-    { nome: "Basílica Histórica", cat: "Histórico", html: `<h3>Basílica Histórica</h3><p><img src="https://upload.wikimedia.org/wikipedia/commons/f/fc/Basilica_Velha_de_Aparecida.jpg" width="100%;" height="270"></a>
+    { nome: "Basílica Histórica", cat: "Histórico", html: `<h3>Basílica Histórica</h3><p><img src="https://upload.wikimedia.org/wikipedia/commons/f/fc/Basilica_Velha_de_Aparecida.jpg" width="100%;" height="270" loading="lazy" alt="Basílica Histórica"></a>
 
  
   
@@ -8846,7 +8874,7 @@ Localizado no pátio do Santuário Nacional, o Centro de Apoio ao Romeiro foi in
 <p><a href="tel:1231051517" class="btn-contact bg-whatsapp"><i class="fas fa-phone-alt"></i> LIGAR AGORA</a></p>
 <p><a href="https://goo.gl/maps/Zs14vMpn1sx" class="btn-contact bg-map" target="_blank"><i class="fas fa-map-marker-alt"></i> VER NO MAPA</a></p>
 </center></p>` },
-    { nome: "Memorial dos Construtores", cat: "Museu", html: `<h3>Memorial dos Construtores</h3><p><center><img src="https://images.a12.com/source/files/c/157430/MEMORIAL_DOS_CONSTRUTORES_1024-320-0-0.jpg"width="100%;" height="350px" /></center>
+    { nome: "Memorial dos Construtores", cat: "Museu", html: `<h3>Memorial dos Construtores</h3><p><center><img src="https://images.a12.com/source/files/c/157430/MEMORIAL_DOS_CONSTRUTORES_1024-320-0-0.jpg" width="100%" height="350px" loading="lazy" alt="Memorial dos Construtores"></center>
 
 
 
@@ -9189,7 +9217,7 @@ Localizado no pátio do Santuário Nacional, o Centro de Apoio ao Romeiro foi in
     </div>
 <p><a href="https://goo.gl/maps/Zs14vMpn1sx" class="btn-contact bg-map" target="_blank"><i class="fas fa-map-marker-alt"></i> VER NO MAPA</a></p>
 </center></p>` },
-    { nome: "Passarela da Fé", cat: "Turismo", html: `<h3>Passarela da Fé</h3><p><center><img src="https://media-cdn.tripadvisor.com/media/photo-s/0b/a4/1d/6d/passarela-da-fe.jpg" style="width="250px" height="200px" /></center>
+    { nome: "Passarela da Fé", cat: "Turismo", html: `<h3>Passarela da Fé</h3><p><center><img src="https://media-cdn.tripadvisor.com/media/photo-s/0b/a4/1d/6d/passarela-da-fe.jpg" style="width="250px" height="200px" / loading="lazy" alt="Passarela da Fé"></center>
 
 
 
@@ -9542,7 +9570,7 @@ Localizado no pátio do Santuário Nacional, o Centro de Apoio ao Romeiro foi in
     { nome: "Nicho de N. Sra. Aparecida", cat: "Religioso", html: `<h3>
 
 <div class="content-header">
-<img src="https://www.a12.com/source/files/originals/nicho_4.jpg">
+<img src="https://www.a12.com/source/files/originals/nicho_4.jpg" loading="lazy" alt="Nicho de N. Sra. Aparecida">
 </div>
 
 
@@ -9895,7 +9923,7 @@ Localizado no pátio do Santuário Nacional, o Centro de Apoio ao Romeiro foi in
 
 
   <div class="content-header">
-<img src="https://images.a12.com/source/files/c/243655/Capela_do_Batismo_no_Santuario_de_Aparecida-242475_724-483-0-0.jpg">
+<img src="https://images.a12.com/source/files/c/243655/Capela_do_Batismo_no_Santuario_de_Aparecida-242475_724-483-0-0.jpg" loading="lazy" alt="Capela do Batismo">
 </div>
 
 <style>
@@ -10251,7 +10279,7 @@ Localizado no pátio do Santuário Nacional, o Centro de Apoio ao Romeiro foi in
 
 
  <div class="content-header">
-<img src="https://carrosantigos.files.wordpress.com/2010/01/aparecida.jpg">
+<img src="https://carrosantigos.files.wordpress.com/2010/01/aparecida.jpg" loading="lazy" alt="Construção da Basílica">
 </div>
 
 <style>
@@ -10636,58 +10664,58 @@ Localizado no pátio do Santuário Nacional, o Centro de Apoio ao Romeiro foi in
         <h2 class="section-title"><i class="fa-solid fa-images icon-blue"></i> Galeria Histórica e Acervo</h2>
         <div class="history-gallery">
             <div class="gallery-item">
-                <img src="http://acervo.estadao.com.br/imagens/105x65/Santuario_NossaSenhoraAparecida_Corte_EstadoaAcervo.jpg" alt="Acervo Estadão">
+                <img src="http://acervo.estadao.com.br/imagens/105x65/Santuario_NossaSenhoraAparecida_Corte_EstadoaAcervo.jpg" alt="Acervo Estadão" loading="lazy">
             </div>
             <div class="gallery-item">
-                <img src="http://2.bp.blogspot.com/_GVxwcJNQp2Y/TQqZvshUdLI/AAAAAAAAABI/_6Egwqb6TIY/s1600/APARECIDA+ANTIGA+SEMPRE+083.jpg" alt="Aparecida Antiga">
+                <img src="http://2.bp.blogspot.com/_GVxwcJNQp2Y/TQqZvshUdLI/AAAAAAAAABI/_6Egwqb6TIY/s1600/APARECIDA+ANTIGA+SEMPRE+083.jpg" alt="Aparecida Antiga" loading="lazy">
             </div>
             <div class="gallery-item">
-                <img src="https://1.bp.blogspot.com/-FPJvuRJrhXU/VP7qoygsMEI/AAAAAAAAQ0c/aeBaj4l_EMg/s1600/10403480_952067554826011_2275879519843987426_n%2B(1).jpg" alt="Construção Histórica">
+                <img src="https://1.bp.blogspot.com/-FPJvuRJrhXU/VP7qoygsMEI/AAAAAAAAQ0c/aeBaj4l_EMg/s1600/10403480_952067554826011_2275879519843987426_n%2B(1).jpg" alt="Construção Histórica" loading="lazy">
             </div>
             <div class="gallery-item">
-                <img src="http://1.bp.blogspot.com/_GVxwcJNQp2Y/TQuhINz6h-I/AAAAAAAAACM/u6c_4OACoP4/s1600/DSC02841.JPG" alt="Detalhe de Época">
+                <img src="http://1.bp.blogspot.com/_GVxwcJNQp2Y/TQuhINz6h-I/AAAAAAAAACM/u6c_4OACoP4/s1600/DSC02841.JPG" alt="Detalhe de Época" loading="lazy">
             </div>
             <div class="gallery-item">
-                <img src="http://www.jornalolince.com.br/2010/ago/img/amplia/01210.jpg" alt="Registro Histórico">
+                <img src="http://www.jornalolince.com.br/2010/ago/img/amplia/01210.jpg" alt="Registro Histórico" loading="lazy">
             </div>
             <div class="gallery-item">
-                <img src="http://www.jb.com.br/media/fotos/2017/10/08/610x472both/Cupula_Central_3G.jpg" alt="Cúpula Central">
+                <img src="http://www.jb.com.br/media/fotos/2017/10/08/610x472both/Cupula_Central_3G.jpg" alt="Cúpula Central" loading="lazy">
             </div>
             <div class="gallery-item">
-                <img src="http://4.bp.blogspot.com/-3lmkcCAP5YI/Td1_dcceTWI/AAAAAAAAAFA/tlB01MdeykA/s1600/OgAAAJPdgHosw_T9bWvzYPCj_Wzjt8cV63E_r_AB3Rghil23_KluRCkgMkAXMOtexXxu24KIZhBCCcS_2yyZMxBR8-EAm1T1UE1xjoVOjkl76ctXU56pQlR-B5-4.jpg" alt="Acervo Antigo">
+                <img src="http://4.bp.blogspot.com/-3lmkcCAP5YI/Td1_dcceTWI/AAAAAAAAAFA/tlB01MdeykA/s1600/OgAAAJPdgHosw_T9bWvzYPCj_Wzjt8cV63E_r_AB3Rghil23_KluRCkgMkAXMOtexXxu24KIZhBCCcS_2yyZMxBR8-EAm1T1UE1xjoVOjkl76ctXU56pQlR-B5-4.jpg" alt="Acervo Antigo" loading="lazy">
             </div>
             <div class="gallery-item">
-                <img src="http://3.bp.blogspot.com/-LqH_0NYxffk/TqlW6IDrWAI/AAAAAAAAAUU/f-TR_bnf0zQ/s1600/APARECIDA16032.jpg" alt="Panorâmica Antiga">
+                <img src="http://3.bp.blogspot.com/-LqH_0NYxffk/TqlW6IDrWAI/AAAAAAAAAUU/f-TR_bnf0zQ/s1600/APARECIDA16032.jpg" alt="Panorâmica Antiga" loading="lazy">
             </div>
             <div class="gallery-item">
-                <img src="http://1.bp.blogspot.com/_GVxwcJNQp2Y/TU7GxRt1XZI/AAAAAAAAAGs/J_jcvzbr_Og/s1600/imgCAPJ09T8.jpg" alt="Construção da Basílica">
+                <img src="http://1.bp.blogspot.com/_GVxwcJNQp2Y/TU7GxRt1XZI/AAAAAAAAAGs/J_jcvzbr_Og/s1600/imgCAPJ09T8.jpg" alt="Construção da Basílica" loading="lazy">
             </div>
             <div class="gallery-item">
-                <img src="https://i.pinimg.com/originals/80/c5/06/80c5065e1743a89d7f89391d5027d49d.jpg" alt="Pintura Sacra e Detalhe">
+                <img src="https://i.pinimg.com/originals/80/c5/06/80c5065e1743a89d7f89391d5027d49d.jpg" alt="Pintura Sacra e Detalhe" loading="lazy">
             </div>
             <div class="gallery-item">
-                <img src="http://4.bp.blogspot.com/_GVxwcJNQp2Y/TQqb2R0PE5I/AAAAAAAAABU/4dVUQ2eimlY/s1600/basilica+vista+do+paraiba.jpg" alt="Vista do Rio Paraíba">
+                <img src="http://4.bp.blogspot.com/_GVxwcJNQp2Y/TQqb2R0PE5I/AAAAAAAAABU/4dVUQ2eimlY/s1600/basilica+vista+do+paraiba.jpg" alt="Vista do Rio Paraíba" loading="lazy">
             </div>
             <div class="gallery-item">
-                <img src="http://4.bp.blogspot.com/-3CgSKv8kXow/UHgP8asfYqI/AAAAAAAABY4/8TWBO5rgrlc/s1600/Construcao-da-Passarela.jpg" alt="Construção da Passarela">
+                <img src="http://4.bp.blogspot.com/-3CgSKv8kXow/UHgP8asfYqI/AAAAAAAABY4/8TWBO5rgrlc/s1600/Construcao-da-Passarela.jpg" alt="Construção da Passarela" loading="lazy">
             </div>
             <div class="gallery-item">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTOjwMljamCIczS8h5rN345TpPZr9mnar4HLgpFoxZkvGhI84f0" alt="Antiga Imagem Coletiva">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTOjwMljamCIczS8h5rN345TpPZr9mnar4HLgpFoxZkvGhI84f0" alt="Antiga Imagem Coletiva" loading="lazy">
             </div>
             <div class="gallery-item">
-                <img src="http://3.bp.blogspot.com/_GVxwcJNQp2Y/TU7H5gRexHI/AAAAAAAAAGw/cfpH8Pn2U-s/s1600/OPERAIO+EM+OBRAS.jpg" alt="Operário nas Obras">
+                <img src="http://3.bp.blogspot.com/_GVxwcJNQp2Y/TU7H5gRexHI/AAAAAAAAAGw/cfpH8Pn2U-s/s1600/OPERAIO+EM+OBRAS.jpg" alt="Operário nas Obras" loading="lazy">
             </div>
             <div class="gallery-item">
-                <img src="http://1.bp.blogspot.com/_GVxwcJNQp2Y/TQuf0gGbV0I/AAAAAAAAACA/Fqf7MTm9EH4/s1600/DSC02755.JPG" alt="Detalhe Histórico">
+                <img src="http://1.bp.blogspot.com/_GVxwcJNQp2Y/TQuf0gGbV0I/AAAAAAAAACA/Fqf7MTm9EH4/s1600/DSC02755.JPG" alt="Detalhe Histórico" loading="lazy">
             </div>
             <div class="gallery-item">
-                <img src="http://4.bp.blogspot.com/_GVxwcJNQp2Y/TQqXDcPUvGI/AAAAAAAAAA0/yeCCUm5K1Qw/s1600/TORRE+BRASILIA.jpg" alt="Torre Brasília em Obras">
+                <img src="http://4.bp.blogspot.com/_GVxwcJNQp2Y/TQqXDcPUvGI/AAAAAAAAAA0/yeCCUm5K1Qw/s1600/TORRE+BRASILIA.jpg" alt="Torre Brasília em Obras" loading="lazy">
             </div>
             <div class="gallery-item">
-                <img src="https://78.media.tumblr.com/fc858b8c9972108ac338656ff8f97d47/tumblr_oewpxnPs0N1uzr707o1_500.jpg" alt="Detalhe de Época">
+                <img src="https://78.media.tumblr.com/fc858b8c9972108ac338656ff8f97d47/tumblr_oewpxnPs0N1uzr707o1_500.jpg" alt="Detalhe de Época" loading="lazy">
             </div>
             <div class="gallery-item">
-                <img src="https://1.bp.blogspot.com/-XJzHGAasnlk/VrtH63_z_YI/AAAAAAAAma0/XoI1mmG_kAk/s640/foto.JPG" alt="Registro Antigo">
+                <img src="https://1.bp.blogspot.com/-XJzHGAasnlk/VrtH63_z_YI/AAAAAAAAma0/XoI1mmG_kAk/s640/foto.JPG" alt="Registro Antigo" loading="lazy">
             </div>
         </div>
 
@@ -10697,7 +10725,7 @@ Localizado no pátio do Santuário Nacional, o Centro de Apoio ao Romeiro foi in
 <p><a href="tel:1231043491" class="btn-contact bg-whatsapp"><i class="fas fa-phone-alt"></i> LIGAR AGORA</a></p>
 <p><a href="https://goo.gl/maps/Zs14vMpn1sx" class="btn-contact bg-map" target="_blank"><i class="fas fa-map-marker-alt"></i> VER NO MAPA</a></p>
 </center></p>` },
-    { nome: "Contato / Suporte", cat: "Informação", html: `<h3>Fale Conosco</h3><p><center><img src="https://yata-apix-4f083006-0fe9-4f91-807a-c0fc36f924bd.s3-object.locaweb.com.br/b029cc83f4404640a38fb66f647b88ae.png" style="width="100%;" height="200px" /></center>
+    { nome: "Contato / Suporte", cat: "Informação", html: `<h3>Fale Conosco</h3><p><center><img src="https://yata-apix-4f083006-0fe9-4f91-807a-c0fc36f924bd.s3-object.locaweb.com.br/b029cc83f4404640a38fb66f647b88ae.png" style="width:100%; height:200px;" loading="lazy" alt="Contato / Suporte"></center>
 
   
 
@@ -10709,18 +10737,41 @@ Localizado no pátio do Santuário Nacional, o Centro de Apoio ao Romeiro foi in
 
 <br>
 <center>
-<p><a href="mailto:guiaaparecidapotim@hotmail.com"><img src="https://i.imgur.com/xPuipxE.png" width="300px;" height="70px" />
+<p><a href="mailto:guiaaparecidapotim@hotmail.com"><img src="https://i.imgur.com/xPuipxE.png" width="300px;" height="70px" / loading="lazy" alt="Contato / Suporte">
 </center></p>` }
 ];
+
+// Gera um ID estável para cada item, baseado no nome (e não na posição no array).
+// Isso garante que favoritos salvos continuem apontando para o item certo mesmo que
+// no futuro você adicione, remova ou reordene itens dentro de "paginas".
+(function gerarIdsEstaveis() {
+    function slugify(texto) {
+        return (texto || "")
+            .toString()
+            .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // remove acentos
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/(^-|-$)/g, "") || "item";
+    }
+    const contagem = {};
+    paginas.forEach((p, i) => {
+        let base = slugify(p.nome);
+        contagem[base] = (contagem[base] || 0) + 1;
+        p.id = contagem[base] > 1 ? `${base}-${contagem[base]}` : base;
+    });
+})();
 
 // Estado global da aplicação de 6 Categorias
 let categoriaAtual = null;
 let regiaoFiltro = null;
 let notaSelecionada = 0;
 let bannerTimer = null;
+let scrollPosSalva = 0; // guarda a posição de rolagem da lista para restaurar ao "Voltar"
 
-// Inicialização dos favoritos a partir do localStorage
-let favoritos = JSON.parse(localStorage.getItem("guia_favoritos")) || [];
+// Inicialização dos favoritos a partir do localStorage (agora por ID estável, não por índice)
+let favoritos = JSON.parse(localStorage.getItem("guia_favoritos_v2")) || [];
+// Locais marcados como "visitados" para o Passaporte do Peregrino (também por ID estável)
+let visitados = JSON.parse(localStorage.getItem("guia_visitados_v1")) || [];
 
 function toggleDarkMode() {
     document.body.classList.toggle("dark-theme");
@@ -10734,14 +10785,237 @@ function toggleDarkMode() {
 
 function toggleFav(idx, event) {
     event.stopPropagation();
-    const indexStr = idx.toString();
-    if (favoritos.includes(indexStr)) {
-        favoritos = favoritos.filter(f => f !== indexStr);
+    const id = paginas[idx].id;
+    if (favoritos.includes(id)) {
+        favoritos = favoritos.filter(f => f !== id);
     } else {
-        favoritos.push(indexStr);
+        favoritos.push(id);
     }
-    localStorage.setItem("guia_favoritos", JSON.stringify(favoritos));
+    localStorage.setItem("guia_favoritos_v2", JSON.stringify(favoritos));
     renderMenu();
+}
+
+// Ícone por categoria, usado nos "carimbos" do passaporte
+const iconesPorCategoria = {
+    "Pontos Turísticos": "fa-camera-retro",
+    "Hotéis e Pousadas": "fa-hotel",
+    "Bares e Restaurantes": "fa-utensils",
+    "Lazer": "fa-umbrella-beach",
+    "Números Úteis": "fa-phone",
+    "Parceiros": "fa-handshake"
+};
+
+function marcarVisitado(id, event) {
+    if (event) event.stopPropagation();
+    if (visitados.includes(id)) {
+        visitados = visitados.filter(v => v !== id);
+    } else {
+        visitados.push(id);
+    }
+    localStorage.setItem("guia_visitados_v1", JSON.stringify(visitados));
+
+    // Atualiza o botão de check-in se a página de detalhe desse local estiver aberta
+    const btn = document.getElementById("btn-checkin");
+    if (btn && btn.dataset.id === id) {
+        atualizarBotaoCheckin(id);
+    }
+    // Atualiza o modal do passaporte se estiver aberto
+    if (document.getElementById("modalPassaporte").style.display === "flex") {
+        renderPassaporte();
+    }
+}
+
+function atualizarBotaoCheckin(id) {
+    const btn = document.getElementById("btn-checkin");
+    if (!btn) return;
+    const visitado = visitados.includes(id);
+    btn.classList.toggle("checkin-feito", visitado);
+    btn.innerHTML = visitado
+        ? '<i class="fas fa-check-circle"></i> Visitado! Ver meu passaporte'
+        : '<i class="far fa-circle"></i> Marcar como visitado';
+}
+
+function abrirModalPassaporte() {
+    renderPassaporte();
+    document.getElementById("modalPassaporte").style.display = "flex";
+}
+
+function fecharModalPassaporte() {
+    document.getElementById("modalPassaporte").style.display = "none";
+}
+
+function renderPassaporte() {
+    const total = paginas.length;
+    const feitos = paginas.filter(p => visitados.includes(p.id)).length;
+    const pct = total ? Math.round((feitos / total) * 100) : 0;
+
+    document.getElementById("passaporte-progresso-barra").style.width = pct + "%";
+    document.getElementById("passaporte-progresso-texto").textContent = `${feitos} de ${total} visitados`;
+
+    const grid = document.getElementById("passaporte-grid");
+    grid.innerHTML = paginas.map(p => {
+        const feito = visitados.includes(p.id);
+        const icone = iconesPorCategoria[p.cat] || "fa-map-marker-alt";
+        return `
+            <div onclick="marcarVisitado('${p.id}')" title="${p.nome}"
+                 style="text-align:center; cursor:pointer; padding:6px; border-radius:10px; background:${feito ? "#e9f9ee" : "#f5f5f5"};">
+                <i class="fas ${feito ? "fa-stamp" : icone}" style="font-size:22px; color:${feito ? "#25D366" : "#bbb"};"></i>
+                <div style="font-size:10px; margin-top:4px; color:#555; line-height:1.2; max-height:24px; overflow:hidden;">${p.nome}</div>
+            </div>`;
+    }).join("");
+
+    document.getElementById("passaporte-btn-compartilhar").style.display = (feitos === total && total > 0) ? "block" : "none";
+}
+
+function compartilharPassaporte() {
+    const total = paginas.length;
+    const texto = `🙏 Completei o Passaporte do Peregrino em Aparecida! Visitei todos os ${total} pontos do Guia Turístico. Baixe o app e comece o seu roteiro também!`;
+    abrirCompartilhamento(texto, window.location.href);
+}
+
+// ==================== AVALIAÇÕES E COMENTÁRIOS POR LOCAL (Firebase Firestore) ====================
+let notaComentarioSelecionada = 0;
+
+function renderSecaoComentarios(id) {
+    if (!firebaseConfigured) {
+        // Firebase ainda não configurado: mostra aviso discreto em vez do formulário quebrado
+        return `
+        <div class="content-card" style="margin-top:15px; text-align:center; color:#999; font-size:13px;">
+            <i class="fas fa-comments"></i> Avaliações e comentários chegando em breve!
+        </div>`;
+    }
+    return `
+    <div class="content-card" style="margin-top:15px;" id="comentarios-section">
+        <h3 style="margin-top:0;"><i class="fas fa-comments"></i> Avaliações e Comentários</h3>
+        <div id="comentarios-media" style="font-size:13px; color:#666; margin-bottom:15px;">Carregando...</div>
+
+        <div class="stars" id="comentario-stars" style="font-size:22px; margin-bottom:10px;">
+            <i class="fas fa-star" onclick="definirNotaComentario(1)"></i>
+            <i class="fas fa-star" onclick="definirNotaComentario(2)"></i>
+            <i class="fas fa-star" onclick="definirNotaComentario(3)"></i>
+            <i class="fas fa-star" onclick="definirNotaComentario(4)"></i>
+            <i class="fas fa-star" onclick="definirNotaComentario(5)"></i>
+        </div>
+        <input type="text" id="comentario-nome" placeholder="Seu nome (opcional)" maxlength="60"
+               style="width:100%; box-sizing:border-box; padding:10px; border-radius:10px; border:1px solid #ddd; margin-bottom:8px; font-family:inherit;">
+        <textarea id="comentario-texto" placeholder="Conte como foi sua experiência..." rows="3" maxlength="1000"
+               style="width:100%; box-sizing:border-box; padding:10px; border-radius:10px; border:1px solid #ddd; margin-bottom:8px; font-family:inherit; resize:vertical;"></textarea>
+        <button class="btn-submit-rate" style="width:100%;" onclick="enviarComentario('${id}')">Enviar Avaliação</button>
+
+        <div id="comentarios-lista" style="margin-top:20px; text-align:left;"></div>
+    </div>`;
+}
+
+function definirNotaComentario(nota) {
+    notaComentarioSelecionada = nota;
+    const stars = document.querySelectorAll('#comentario-stars i');
+    stars.forEach((s, idx) => s.classList.toggle('active', idx < nota));
+}
+
+function carregarComentarios(id) {
+    db.collection("comentarios")
+        .where("localId", "==", id)
+        .orderBy("criadoEm", "desc")
+        .get()
+        .then(snapshot => {
+            const comentarios = snapshot.docs.map(d => d.data());
+            renderComentarios(comentarios);
+        })
+        .catch(err => {
+            console.error("Erro ao carregar comentários:", err);
+            const lista = document.getElementById("comentarios-lista");
+            if (lista) lista.innerHTML = '<p style="color:#999; font-size:13px;">Não foi possível carregar os comentários agora.</p>';
+        });
+}
+
+function renderComentarios(comentarios) {
+    const media = document.getElementById("comentarios-media");
+    const lista = document.getElementById("comentarios-lista");
+    if (!media || !lista) return;
+
+    if (comentarios.length === 0) {
+        media.innerHTML = "Ainda sem avaliações. Seja o primeiro a comentar!";
+        lista.innerHTML = "";
+        return;
+    }
+
+    const mediaNota = (comentarios.reduce((s, c) => s + (c.nota || 0), 0) / comentarios.length).toFixed(1);
+    media.innerHTML = `<i class="fas fa-star" style="color:#ffc107;"></i> <strong>${mediaNota}</strong> de 5 · ${comentarios.length} avaliação(ões)`;
+
+    lista.innerHTML = comentarios.map(c => `
+        <div style="border-top:1px solid #eee; padding:10px 0;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <strong style="font-size:13px;">${(c.nome || "Anônimo").replace(/</g, "&lt;")}</strong>
+                <span style="color:#ffc107; font-size:12px;">${"★".repeat(c.nota || 0)}${"☆".repeat(5 - (c.nota || 0))}</span>
+            </div>
+            <p style="font-size:13px; color:#555; margin:5px 0 0;">${(c.texto || "").replace(/</g, "&lt;")}</p>
+        </div>`).join("");
+}
+
+function enviarComentario(id) {
+    const nome = document.getElementById("comentario-nome").value.trim();
+    const texto = document.getElementById("comentario-texto").value.trim();
+
+    if (notaComentarioSelecionada === 0) {
+        alert("Selecione de 1 a 5 estrelas antes de enviar.");
+        return;
+    }
+    if (!texto) {
+        alert("Escreva um comentário antes de enviar.");
+        return;
+    }
+
+    db.collection("comentarios").add({
+        localId: id,
+        nome: nome || "Anônimo",
+        nota: notaComentarioSelecionada,
+        texto: texto,
+        criadoEm: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(() => {
+        document.getElementById("comentario-nome").value = "";
+        document.getElementById("comentario-texto").value = "";
+        notaComentarioSelecionada = 0;
+        definirNotaComentario(0);
+        carregarComentarios(id);
+    }).catch(err => {
+        console.error("Erro ao enviar comentário:", err);
+        alert("Não foi possível enviar sua avaliação agora. Tente novamente.");
+    });
+}
+
+// ==================== COMPARTILHAMENTO EM REDES SOCIAIS ====================
+function abrirCompartilhamento(texto, url) {
+    document.getElementById("share-whatsapp").href = `https://wa.me/?text=${encodeURIComponent(texto + " " + url)}`;
+    document.getElementById("share-facebook").href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+    document.getElementById("share-twitter").href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(texto)}&url=${encodeURIComponent(url)}`;
+    document.getElementById("share-telegram").href = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(texto)}`;
+    document.getElementById("btn-copiar-link").onclick = () => copiarLinkFallback(url);
+    document.getElementById("modalCompartilhar").style.display = "flex";
+}
+
+function fecharModalCompartilhar() {
+    document.getElementById("modalCompartilhar").style.display = "none";
+}
+
+// ==================== NOTIFICAÇÕES PUSH ====================
+function ativarNotificacoes() {
+    if (!firebaseConfigured || !messaging) {
+        alert("As notificações ainda não foram configuradas neste app.");
+        return;
+    }
+    Notification.requestPermission().then(permissao => {
+        if (permissao !== "granted") return;
+        messaging.getToken({ vapidKey: FIREBASE_VAPID_KEY }).then(token => {
+            if (!token) return;
+            db.collection("push_tokens").doc(token).set({
+                token,
+                criadoEm: firebase.firestore.FieldValue.serverTimestamp()
+            }).then(() => {
+                document.getElementById("btn-notificacoes").innerHTML = '<i class="fas fa-bell"></i> Notificações ativadas';
+                document.getElementById("btn-notificacoes").disabled = true;
+            });
+        }).catch(err => console.error("Erro ao obter token de notificação:", err));
+    });
 }
 
 function checarAberto(p) {
@@ -10776,7 +11050,7 @@ function renderMenu(filtro = "") {
         paginas.forEach((p, i) => {
             if (p.nome.toLowerCase().includes(filtro.toLowerCase()) || p.cat.toLowerCase().includes(filtro.toLowerCase())) {
                 encontrados++;
-                const isFav = favoritos.includes(i.toString()) ? "is-fav" : "";
+                const isFav = favoritos.includes(paginas[i].id) ? "is-fav" : "";
                 const badgeStatus = checarAberto(p);
                 html += `
                     <div class="card-menu" onclick="abrir(${i})">
@@ -10834,9 +11108,9 @@ function renderMenu(filtro = "") {
 
         if (favoritos.length > 0) {
             htmlHome += '<div style="margin-top:20px; font-weight:bold; font-size:14px; color:var(--primary); text-transform:uppercase;"><i class="fas fa-heart"></i> Meus Favoritos Salvos:</div>';
-            favoritos.forEach(idxStr => {
-                const i = parseInt(idxStr);
-                if (paginas[i]) {
+            favoritos.forEach(favId => {
+                const i = paginas.findIndex(p => p.id === favId);
+                if (i !== -1) {
                     htmlHome += `
                         <div class="card-menu" onclick="abrir(${i})" style="border-left: 4px solid #e74c3c;">
                             <div class="card-menu-header">
@@ -10907,7 +11181,7 @@ function renderMenu(filtro = "") {
             }
 
             temItens = true;
-            const isFav = favoritos.includes(i.toString()) ? "is-fav" : "";
+            const isFav = favoritos.includes(paginas[i].id) ? "is-fav" : "";
             const badgeStatus = checarAberto(p);
             html += `
                 <div class="card-menu" onclick="abrir(${i})">
@@ -10954,6 +11228,10 @@ function buscar() {
 }
 
 function abrir(i) {
+    // Guarda onde o usuário estava na lista para poder voltar exatamente ali
+    scrollPosSalva = window.scrollY;
+    const id = paginas[i].id;
+
     document.getElementById("search-area").style.display = "none";
     document.getElementById("action-bar-container").style.display = "none";
     document.getElementById("banner-container").style.display = "none";
@@ -10962,14 +11240,27 @@ function abrir(i) {
         <button class="btn-voltar" onclick="voltarParaItens()">
             <i class="fas fa-arrow-left"></i> Voltar
         </button>
+        <button id="btn-checkin" data-id="${id}" class="btn-voltar" style="margin-left:8px;"
+                onclick="if (visitados.includes('${id}')) { abrirModalPassaporte(); } else { marcarVisitado('${id}'); }">
+        </button>
         <div class="content-card">
             ${paginas[i].html}
-        </div>`;
+        </div>
+        ${renderSecaoComentarios(id)}`;
+    atualizarBotaoCheckin(id);
+    if (firebaseConfigured) {
+        carregarComentarios(id);
+    }
     window.scrollTo(0, 0);
 }
 
 function voltarParaItens() {
     renderMenu();
+    // Restaura a rolagem no ponto exato de onde o usuário saiu, em vez de voltar ao topo.
+    // O requestAnimationFrame garante que a lista já foi desenhada na tela antes de rolar.
+    requestAnimationFrame(() => {
+        window.scrollTo(0, scrollPosSalva);
+    });
 }
 
 // Controle do Banner Rotativo de 8s
@@ -10997,31 +11288,25 @@ function iniciarBannerRandomico() {
     }, 8000);
 }
 
+// Links de destino de cada banner do topo. Preencha aqui quando tiver os links definitivos.
+const bannerLinks = {
+    1: null, // TODO: link do banner "Feira Livre de Aparecida"
+    2: "https://api.whatsapp.com/send?phone=5512996342373&text=Quero+anunciar+no+guia", // "Anuncie Aqui"
+    3: null  // TODO: link do banner do vídeo
+};
+
 function cliqueBanner(id) {
-    alert("Você clicou no Banner do Patrocinador Premium " + id + "!");
+    const url = bannerLinks[id];
+    if (url) {
+        window.open(url, "_blank");
+    }
 }
 
 // Compartilhamento Nativo
 function compartilharApp() {
     const url = window.location.href;
-    const titulo = 'Guia Turístico Aparecida';
     const texto = 'Descubra pontos turísticos, hotéis, restaurantes e serviços em Aparecida com este App!';
-
-    // Tenta compartilhamento nativo (mais completo)
-    if (navigator.share) {
-        navigator.share({
-            title: titulo,
-            text: texto,
-            url: url
-        }).catch(err => {
-            if (err.name !== 'AbortError') {
-                copiarLinkFallback(url);
-            }
-        });
-    } else {
-        // Fallback para WebView / navegadores antigos
-        copiarLinkFallback(url);
-    }
+    abrirCompartilhamento(texto, url);
 }
 
 function copiarLinkFallback(url) {
@@ -11092,6 +11377,10 @@ function enviarAvaliacao() {
 window.onload = function() {
     renderMenu();
     iniciarBannerRandomico();
+
+    if (firebaseConfigured && messaging && "Notification" in window && Notification.permission === "default") {
+        document.getElementById("btn-notificacoes").style.display = "flex";
+    }
 };
 </script>
 
