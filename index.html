@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -322,7 +323,20 @@
             display: flex;
             gap: 12px;
             align-items: flex-start;
+            position: relative;
         }
+        .recado-acoes {
+            display: flex; gap: 6px; flex-shrink: 0; align-self: flex-start;
+        }
+        .recado-btn-icone {
+            width: 30px; height: 30px; border-radius: 8px;
+            border: 1px solid #eee; background: #fafafa; color: #666;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            font-size: 12px; transition: all 0.2s;
+        }
+        .recado-btn-icone:hover { background: #f0f0f0; }
+        .recado-btn-icone:last-child:hover { background: #fdecea; color: #e74c3c; border-color: #f5c6c2; }
+        body.dark-theme .recado-btn-icone { background: #2a2a2a !important; border-color: #444 !important; color: #ccc !important; }
         .recado-avatar {
             width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0;
             background: linear-gradient(135deg, var(--primary), #17a2b8);
@@ -11048,6 +11062,24 @@ function enviarComentario(id) {
 // ==================== MURAL DE RECADOS (usa o mesmo Firestore das avaliações) ====================
 // Página fixa dentro do app (não é mais um popup) - segue o mesmo padrão de navegação
 // usado em abrir()/voltarParaItens() para as demais seções.
+//
+// Como as regras do Firestore permitem editar/excluir qualquer recado (mais simples,
+// sem exigir login), o app guarda no localStorage do próprio aparelho os IDs dos
+// recados que a pessoa criou, e só mostra os botões de editar/excluir neles.
+let meusRecados = JSON.parse(localStorage.getItem("guia_meus_recados_v1")) || [];
+let recadosAtuais = [];
+let recadoEditandoId = null;
+
+function salvarMeuRecado(id) {
+    meusRecados.push(id);
+    localStorage.setItem("guia_meus_recados_v1", JSON.stringify(meusRecados));
+}
+
+function esquecerMeuRecado(id) {
+    meusRecados = meusRecados.filter(x => x !== id);
+    localStorage.setItem("guia_meus_recados_v1", JSON.stringify(meusRecados));
+}
+
 function abrirMuralRecados() {
     scrollPosSalva = window.scrollY;
 
@@ -11073,6 +11105,7 @@ function abrirMuralRecados() {
         </div>
         <div id="recados-lista" style="margin-top:15px;"></div>
     `;
+    recadoEditandoId = null;
     carregarRecados();
     window.scrollTo(0, 0);
 }
@@ -11103,8 +11136,8 @@ function carregarRecados() {
         .limit(50)
         .get()
         .then(snapshot => {
-            const recados = snapshot.docs.map(d => d.data());
-            renderRecados(recados);
+            recadosAtuais = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+            renderRecados();
         })
         .catch(err => {
             console.error("Erro ao carregar recados:", err);
@@ -11118,19 +11151,44 @@ function formatarDataRecado(criadoEm) {
     return data.toLocaleDateString('pt-BR') + ' às ' + data.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
 }
 
-function renderRecados(recados) {
+function renderRecados() {
     const lista = document.getElementById("recados-lista");
     if (!lista) return;
 
-    if (recados.length === 0) {
+    if (recadosAtuais.length === 0) {
         lista.innerHTML = '<p style="color:#999; font-size:13px; text-align:center;">Ainda sem recados. Seja o primeiro a escrever!</p>';
         return;
     }
 
-    lista.innerHTML = recados.map(r => {
+    lista.innerHTML = recadosAtuais.map(r => {
+        const ehMeu = meusRecados.includes(r.id);
+
+        // Card em modo de edição
+        if (ehMeu && recadoEditandoId === r.id) {
+            const nomeAtual = (r.nome || "").replace(/"/g, "&quot;");
+            const mensagemAtual = (r.mensagem || "").replace(/</g, "&lt;");
+            return `
+            <div class="recado-card" style="flex-direction:column;">
+                <input type="text" id="editar-nome-${r.id}" value="${nomeAtual}" placeholder="Seu nome (opcional)" maxlength="60"
+                       style="width:100%; box-sizing:border-box; padding:8px; border-radius:10px; border:1px solid #ddd; margin-bottom:8px; font-family:inherit;">
+                <textarea id="editar-texto-${r.id}" rows="3" maxlength="500"
+                       style="width:100%; box-sizing:border-box; padding:8px; border-radius:10px; border:1px solid #ddd; font-family:inherit; resize:vertical;">${mensagemAtual}</textarea>
+                <div style="display:flex; gap:8px; margin-top:8px;">
+                    <button class="btn-submit-rate" style="flex:1;" onclick="salvarEdicaoRecado('${r.id}')">Salvar</button>
+                    <button class="btn-submit-rate" style="flex:1; background:#999;" onclick="cancelarEdicaoRecado()">Cancelar</button>
+                </div>
+            </div>`;
+        }
+
         const nome = (r.nome || "Anônimo").replace(/</g, "&lt;");
         const inicial = nome.trim().charAt(0) || "?";
         const mensagem = (r.mensagem || "").replace(/</g, "&lt;");
+        const botoesMeu = ehMeu ? `
+            <div class="recado-acoes">
+                <button class="recado-btn-icone" title="Editar" onclick="editarRecado('${r.id}')"><i class="fas fa-pencil-alt"></i></button>
+                <button class="recado-btn-icone" title="Excluir" onclick="excluirRecado('${r.id}')"><i class="fas fa-trash-alt"></i></button>
+            </div>` : "";
+
         return `
         <div class="recado-card">
             <div class="recado-avatar">${inicial}</div>
@@ -11141,8 +11199,54 @@ function renderRecados(recados) {
                 </div>
                 <p class="recado-texto">${mensagem}</p>
             </div>
+            ${botoesMeu}
         </div>`;
     }).join("");
+}
+
+function editarRecado(id) {
+    recadoEditandoId = id;
+    renderRecados();
+}
+
+function cancelarEdicaoRecado() {
+    recadoEditandoId = null;
+    renderRecados();
+}
+
+function salvarEdicaoRecado(id) {
+    const nomeEl = document.getElementById("editar-nome-" + id);
+    const textoEl = document.getElementById("editar-texto-" + id);
+    const nome = nomeEl.value.trim();
+    const mensagem = textoEl.value.trim();
+
+    if (!mensagem) {
+        alert("Escreva uma mensagem antes de salvar.");
+        return;
+    }
+
+    db.collection("recados").doc(id).update({
+        nome: nome || "Anônimo",
+        mensagem: mensagem
+    }).then(() => {
+        recadoEditandoId = null;
+        carregarRecados();
+    }).catch(err => {
+        console.error("Erro ao editar recado:", err);
+        alert("Não foi possível salvar a edição agora. (" + (err && err.message ? err.message : 'erro desconhecido') + ")");
+    });
+}
+
+function excluirRecado(id) {
+    if (!confirm("Tem certeza que deseja excluir este recado?")) return;
+
+    db.collection("recados").doc(id).delete().then(() => {
+        esquecerMeuRecado(id);
+        carregarRecados();
+    }).catch(err => {
+        console.error("Erro ao excluir recado:", err);
+        alert("Não foi possível excluir o recado agora. (" + (err && err.message ? err.message : 'erro desconhecido') + ")");
+    });
 }
 
 function enviarRecado() {
@@ -11165,7 +11269,8 @@ function enviarRecado() {
         nome: nome || "Anônimo",
         mensagem: mensagem,
         criadoEm: firebase.firestore.FieldValue.serverTimestamp()
-    }).then(() => {
+    }).then((docRef) => {
+        salvarMeuRecado(docRef.id);
         nomeEl.value = "";
         textoEl.value = "";
         carregarRecados();
