@@ -487,6 +487,17 @@
         </div>
     </div>
 
+    <div id="modalConfirmar" class="modal">
+        <div class="modal-content" style="text-align:center; max-width:340px;">
+            <i class="fas fa-triangle-exclamation" style="font-size:26px; color:#e74c3c; margin-bottom:8px;"></i>
+            <p id="modalConfirmar-texto" style="font-size:14px; color:#444; margin:0 0 18px;"></p>
+            <div style="display:flex; gap:10px;">
+                <button onclick="fecharModalOverlay('modalConfirmar')" style="flex:1; background:#f1f1f1; color:#444; border:none; padding:12px; border-radius:12px; font-weight:600; font-size:14px; cursor:pointer;">Cancelar</button>
+                <button id="modalConfirmar-btn-ok" style="flex:1; background:#e74c3c; color:#fff; border:none; padding:12px; border-radius:12px; font-weight:600; font-size:14px; cursor:pointer;">Excluir</button>
+            </div>
+        </div>
+    </div>
+
     <button id="btn-notificacoes" onclick="ativarNotificacoes()"
             style="display:none; width:100%; background:#fff3cd; color:#856404; border:none; padding:10px; border-radius:12px; font-weight:600; font-size:13px; margin-bottom:15px; cursor:pointer; align-items:center; justify-content:center; gap:8px;">
         <i class="fas fa-bell"></i> Ativar notificações de eventos e horários
@@ -10900,6 +10911,17 @@ function fecharModalOverlay(id) {
     document.body.style.overflow = "";
 }
 
+// Confirmação customizada (não mostra o link/URL do app, diferente do confirm() nativo do navegador)
+function confirmarAcao(mensagem, aoConfirmar) {
+    document.getElementById("modalConfirmar-texto").textContent = mensagem;
+    const btnOk = document.getElementById("modalConfirmar-btn-ok");
+    btnOk.onclick = () => {
+        fecharModalOverlay("modalConfirmar");
+        aoConfirmar();
+    };
+    abrirModalOverlay("modalConfirmar");
+}
+
 function abrirModalPassaporte() {
     renderPassaporte();
     abrirModalOverlay("modalPassaporte");
@@ -11256,14 +11278,14 @@ function salvarEdicaoRecado(id) {
 }
 
 function excluirRecado(id) {
-    if (!confirm("Tem certeza que deseja excluir este recado?")) return;
-
-    db.collection("recados").doc(id).delete().then(() => {
-        esquecerMeuRecado(id);
-        carregarRecados();
-    }).catch(err => {
-        console.error("Erro ao excluir recado:", err);
-        alert("Não foi possível excluir o recado agora. (" + (err && err.message ? err.message : 'erro desconhecido') + ")");
+    confirmarAcao("Tem certeza que deseja excluir este recado?", () => {
+        db.collection("recados").doc(id).delete().then(() => {
+            esquecerMeuRecado(id);
+            carregarRecados();
+        }).catch(err => {
+            console.error("Erro ao excluir recado:", err);
+            alert("Não foi possível excluir o recado agora. (" + (err && err.message ? err.message : 'erro desconhecido') + ")");
+        });
     });
 }
 
