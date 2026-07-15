@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -11066,18 +11065,37 @@ function enviarComentario(id) {
 // Como as regras do Firestore permitem editar/excluir qualquer recado (mais simples,
 // sem exigir login), o app guarda no localStorage do próprio aparelho os IDs dos
 // recados que a pessoa criou, e só mostra os botões de editar/excluir neles.
-let meusRecados = JSON.parse(localStorage.getItem("guia_meus_recados_v1")) || [];
+// Tudo protegido com try/catch: se o WebView do app bloquear localStorage,
+// o app não quebra - só deixa de lembrar quais recados são seus após sair da tela.
+function lerMeusRecados() {
+    try {
+        return JSON.parse(localStorage.getItem("guia_meus_recados_v1")) || [];
+    } catch (e) {
+        console.warn("localStorage indisponível neste app:", e);
+        return [];
+    }
+}
+
+let meusRecados = lerMeusRecados();
 let recadosAtuais = [];
 let recadoEditandoId = null;
 
 function salvarMeuRecado(id) {
     meusRecados.push(id);
-    localStorage.setItem("guia_meus_recados_v1", JSON.stringify(meusRecados));
+    try {
+        localStorage.setItem("guia_meus_recados_v1", JSON.stringify(meusRecados));
+    } catch (e) {
+        console.warn("Não foi possível salvar no localStorage:", e);
+    }
 }
 
 function esquecerMeuRecado(id) {
     meusRecados = meusRecados.filter(x => x !== id);
-    localStorage.setItem("guia_meus_recados_v1", JSON.stringify(meusRecados));
+    try {
+        localStorage.setItem("guia_meus_recados_v1", JSON.stringify(meusRecados));
+    } catch (e) {
+        console.warn("Não foi possível salvar no localStorage:", e);
+    }
 }
 
 function abrirMuralRecados() {
