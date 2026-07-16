@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -18,10 +20,12 @@
 
     <style>
         :root {
-            --primary: #0d6efd;
-            --accent: #ffc107;
-            --bg: #f0f2f5;
-            --text: #2d3436;
+            --primary: #0D47A1;
+            --primary-dark: #081E4A;
+            --accent: #D4AF37;
+            --bg: #F5F7FA;
+            --text: #1B1B1B;
+            --text-sub: #707070;
         }
 
         body { margin: 0; font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
@@ -52,63 +56,9 @@
         .status-msg.active { opacity: 1; }
 
         /* Header */
-        header { position: relative; height: 250px; overflow: hidden; background: #0d1b3e; }
-        header img { width: 100%; height: 100%; object-fit: cover; object-position: center 70%; }
-        header::before {
-            content: "";
-            position: absolute; inset: 0;
-            background: linear-gradient(180deg, #0d1b3e 0%, #0d1b3e 32%, rgba(13,27,62,0.55) 55%, rgba(20,50,100,0.15) 72%, rgba(13,27,62,0.6) 100%);
-        }
-        header .wave-gold {
-            position: absolute; left: 50%; bottom: -46px; width: 140%; height: 100px;
-            background: #eecf8e; border-radius: 50%; transform: translateX(-50%); z-index: 1;
-        }
-        header .wave-bg {
-            position: absolute; left: 50%; bottom: -66px; width: 150%; height: 100px;
-            background: var(--bg); border-radius: 50%; transform: translateX(-50%); z-index: 1;
-        }
-
-        .header-icons {
-            position: absolute; top: 18px; left: 0; right: 0; z-index: 3;
-            display: flex; justify-content: space-between; align-items: center; padding: 0 18px;
-        }
-        .header-icon-btn {
-            background: none; border: none; color: #fff; font-size: 19px;
-            width: 38px; height: 38px; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; border-radius: 50%; transition: background 0.2s;
-        }
-        .header-icon-btn:active { background: rgba(255,255,255,0.15); }
-
-        .menu-header-dropdown {
-            display: none; position: absolute; top: 58px; left: 18px; z-index: 10;
-            background: #fff; border-radius: 14px; box-shadow: 0 8px 24px rgba(0,0,0,0.25);
-            overflow: hidden; min-width: 190px;
-        }
-        .menu-header-dropdown.aberto { display: block; }
-        .menu-header-dropdown button {
-            width: 100%; border: none; background: none; padding: 13px 16px; text-align: left;
-            display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 600;
-            color: #333; cursor: pointer; font-family: inherit;
-        }
-        .menu-header-dropdown button:active { background: #f1f1f1; }
-        .menu-header-dropdown button + button { border-top: 1px solid #f0f0f0; }
-        body.dark-theme .menu-header-dropdown { background: #1e1e1e !important; }
-        body.dark-theme .menu-header-dropdown button { color: #fff !important; }
-        body.dark-theme .menu-header-dropdown button + button { border-top: 1px solid #333 !important; }
-
-        .header-titulo {
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            text-align: center; color: #fff; z-index: 2; padding: 0 20px 40px;
-        }
-        .header-titulo .header-subtitulo {
-            font-size: 12px; letter-spacing: 3px; font-weight: 600; text-transform: uppercase;
-            opacity: 0.9; margin-bottom: 6px;
-        }
-        .header-titulo h1 {
-            font-size: 34px; font-weight: 700; margin: 0; letter-spacing: 1px;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.4);
-        }
+        header { position: relative; height: 180px; overflow: hidden; }
+        header img { width: 100%; height: 100%; object-fit: cover; }
+        header::after { content: ""; position: absolute; bottom: 0; left: 0; width: 100%; height: 60%; background: linear-gradient(transparent, rgba(0,0,0,0.7)); }
 
         .container { padding: 20px; max-width: 600px; margin: auto; }
         
@@ -517,45 +467,254 @@
         .roteiro-passo .roteiro-info span { font-size: 11px; color: #999; }
         body.dark-theme .roteiro-passo { background: #1e1e1e !important; }
         body.dark-theme .roteiro-passo h4 { color: #fff !important; }
+
+        /* ============================================================
+           REDESIGN PREMIUM — Tela Inicial
+           ============================================================ */
+
+        body { background: var(--bg); padding-bottom: 78px; }
+
+        /* --- Hero Header --- */
+        .hero-header {
+            position: relative;
+            height: 46vh;
+            min-height: 380px;
+            max-height: 560px;
+            overflow: hidden;
+            background: var(--primary-dark);
+        }
+        .hero-header img.hero-bg {
+            width: 100%; height: 100%; object-fit: cover;
+            position: absolute; top: 0; left: 0;
+            opacity: 0.85;
+        }
+        .hero-header::before {
+            content: "";
+            position: absolute; inset: 0;
+            background: linear-gradient(180deg, rgba(8,30,74,0.92) 0%, rgba(8,30,74,0.55) 30%, rgba(8,30,74,0.25) 55%, rgba(8,30,74,0.75) 100%);
+            z-index: 1;
+        }
+        .hero-wave { position: absolute; bottom: -1px; left: 0; width: 100%; height: 60px; z-index: 2; line-height: 0; }
+        .hero-wave svg { width: 100%; height: 100%; display: block; }
+
+        .hero-topbar {
+            position: relative; z-index: 3;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 16px 18px 0;
+        }
+        .hero-icon-btn {
+            width: 40px; height: 40px; border-radius: 50%;
+            background: rgba(255,255,255,0.14);
+            border: 1px solid rgba(255,255,255,0.25);
+            color: #fff; display: flex; align-items: center; justify-content: center;
+            font-size: 16px; cursor: pointer; backdrop-filter: blur(6px);
+            transition: background 0.2s;
+        }
+        .hero-icon-btn:active { background: rgba(255,255,255,0.28); }
+        .hero-topbar-right { display: flex; gap: 10px; }
+
+        .hero-logo { position: relative; z-index: 3; text-align: center; padding: 18px 20px 40px; }
+        .hero-logo .hero-kicker {
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            color: var(--accent); font-size: 12.5px; font-weight: 600;
+            letter-spacing: 3px; text-transform: uppercase; margin-bottom: 4px;
+        }
+        .hero-logo .hero-kicker::before, .hero-logo .hero-kicker::after {
+            content: ""; height: 1px; width: 26px; background: var(--accent); opacity: 0.7;
+        }
+        .hero-logo h1 {
+            margin: 2px 0 10px; color: #fff; font-weight: 700;
+            font-size: clamp(38px, 11vw, 54px); line-height: 1; letter-spacing: 1px;
+            text-shadow: 0 4px 18px rgba(0,0,0,0.35);
+        }
+        .hero-premium-badge {
+            display: inline-block; background: linear-gradient(135deg, #f3d27a, var(--accent));
+            color: #1B1B1B; font-weight: 700; font-size: 12px; letter-spacing: 2px;
+            padding: 6px 20px; border-radius: 999px; text-transform: uppercase;
+            box-shadow: 0 4px 14px rgba(212,175,55,0.4);
+        }
+        .hero-ornament { margin-top: 10px; color: var(--accent); opacity: 0.65; font-size: 13px; }
+
+        /* --- Barra de busca flutuante --- */
+        .search-float-wrap { position: relative; z-index: 4; margin-top: -34px; padding: 0 18px; }
+        .search-box.search-premium {
+            background: #fff; border-radius: 999px; box-shadow: 0 14px 30px rgba(8,30,74,0.18);
+            display: flex; align-items: center; padding: 4px 6px 4px 20px; margin-bottom: 0;
+        }
+        .search-box.search-premium i.fa-search { position: static; color: var(--text-sub); transform: none; }
+        .search-box.search-premium input.search {
+            border: none; box-shadow: none; padding: 14px 10px; font-size: 15px; background: transparent;
+        }
+        .search-mic-btn {
+            width: 42px; height: 42px; border-radius: 50%; background: var(--bg);
+            display: flex; align-items: center; justify-content: center; color: var(--primary);
+            flex-shrink: 0; border: none; cursor: pointer;
+        }
+        .search-mic-btn i { position: static !important; transform: none !important; color: inherit !important; }
+
+        .container { padding-top: 22px; }
+
+        /* --- Atalhos (Shortcuts) --- */
+        .category-grid { grid-template-columns: repeat(4, 1fr); gap: 12px; }
+        @media (max-width: 420px) { .category-grid { grid-template-columns: repeat(3, 1fr); } }
+        .card-category {
+            border-radius: 20px !important; border-bottom: none !important; padding: 16px 8px !important;
+            box-shadow: 0 3px 14px rgba(8,30,74,0.06) !important; border: 1px solid rgba(8,30,74,0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .card-category:active { transform: scale(0.97); }
+        .card-category .icon-circle {
+            width: 46px; height: 46px; border-radius: 50%; display: flex; align-items: center;
+            justify-content: center; margin: 0 auto 10px; font-size: 19px;
+        }
+        .card-category h3 { font-size: 12px; }
+
+        /* --- Card Promocional --- */
+        .promo-card {
+            position: relative; height: 175px; border-radius: 24px; overflow: hidden;
+            margin-bottom: 20px; cursor: pointer; box-shadow: 0 10px 26px rgba(8,30,74,0.18);
+            background: linear-gradient(120deg, var(--primary-dark), var(--primary));
+        }
+        .promo-card img {
+            position: absolute; right: -10px; bottom: 0; height: 100%; width: 46%;
+            object-fit: cover; object-position: top; opacity: 0.95;
+            -webkit-mask-image: linear-gradient(90deg, transparent, #000 30%);
+            mask-image: linear-gradient(90deg, transparent, #000 30%);
+        }
+        .promo-card-content { position: relative; z-index: 2; padding: 20px 22px; max-width: 62%; }
+        .promo-card-kicker { color: var(--accent); font-size: 12px; font-weight: 700; letter-spacing: 1px; margin-bottom: 6px; }
+        .promo-card-content h3 { color: #fff; font-size: 19px; margin: 0 0 8px; line-height: 1.25; font-weight: 700; }
+        .promo-card-content p { color: rgba(255,255,255,0.8); font-size: 12px; margin: 0 0 14px; line-height: 1.4; }
+        .promo-card-btn {
+            display: inline-flex; align-items: center; gap: 6px; background: var(--accent); color: #1B1B1B;
+            border: none; padding: 9px 16px; border-radius: 999px; font-weight: 700; font-size: 12.5px;
+            cursor: pointer; box-shadow: 0 6px 14px rgba(212,175,55,0.4);
+        }
+
+        /* --- Banner de anúncios premium (rotativo) --- */
+        #banner-container { border-radius: 22px; height: 130px; }
+        .banner-dots {
+            position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
+            z-index: 3; display: flex; gap: 6px;
+        }
+        .banner-dots span { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.5); transition: all 0.3s; }
+        .banner-dots span.active { background: #fff; width: 16px; border-radius: 4px; }
+
+        /* --- Sugestões para você --- */
+        .sugestoes-header { display: flex; align-items: center; justify-content: space-between; margin: 4px 0 12px; }
+        .sugestoes-header h2 { font-size: 16px; margin: 0; color: var(--text); font-weight: 700; }
+        .sugestoes-header span { font-size: 12.5px; color: var(--primary); font-weight: 600; cursor: pointer; }
+        .sugestoes-scroll {
+            display: flex; gap: 14px; overflow-x: auto; padding: 2px 2px 16px; margin-bottom: 6px;
+            scroll-snap-type: x proximity; -webkit-overflow-scrolling: touch;
+        }
+        .sugestoes-scroll::-webkit-scrollbar { display: none; }
+        .card-sugestao {
+            flex: 0 0 148px; scroll-snap-align: start; cursor: pointer; border-radius: 18px; overflow: hidden;
+            background: #fff; box-shadow: 0 3px 14px rgba(8,30,74,0.07); border: 1px solid rgba(8,30,74,0.04);
+            transition: transform 0.2s;
+        }
+        .card-sugestao:active { transform: scale(0.97); }
+        .card-sugestao .sugestao-img-wrap { position: relative; height: 100px; }
+        .card-sugestao img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .card-sugestao .sugestao-icon {
+            position: absolute; left: 8px; bottom: -12px; width: 30px; height: 30px; border-radius: 9px;
+            background: var(--primary-dark); color: #fff; display: flex; align-items: center; justify-content: center;
+            font-size: 13px; box-shadow: 0 3px 8px rgba(0,0,0,0.25);
+        }
+        .card-sugestao .sugestao-info { padding: 16px 10px 12px; }
+        .card-sugestao .sugestao-info h4 { margin: 0 0 3px; font-size: 12.5px; font-weight: 700; color: var(--text); }
+        .card-sugestao .sugestao-info span { font-size: 10.5px; color: var(--text-sub); }
+
+        body.dark-theme .card-sugestao { background: #1e1e1e !important; }
+        body.dark-theme .card-sugestao .sugestao-info h4 { color: #fff !important; }
+        body.dark-theme .card-category h3 { color: #fff !important; }
+
+        /* --- Navegação inferior fixa --- */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+            width: 100%; max-width: 600px; background: #fff;
+            display: flex; justify-content: space-around; align-items: center;
+            padding: 8px 6px calc(6px + env(safe-area-inset-bottom));
+            box-shadow: 0 -4px 18px rgba(8,30,74,0.1); z-index: 1000;
+        }
+        .bottom-nav-item {
+            background: none; border: none; display: flex; flex-direction: column; align-items: center;
+            gap: 3px; color: #9aa3b2; font-size: 10px; font-weight: 600; cursor: pointer;
+            padding: 4px 8px; font-family: 'Poppins', sans-serif; transition: color 0.2s, transform 0.2s;
+        }
+        .bottom-nav-item i { font-size: 18px; }
+        .bottom-nav-item.active { color: var(--primary); transform: translateY(-2px); }
+        body.dark-theme .bottom-nav { background: #1e1e1e !important; box-shadow: 0 -4px 18px rgba(0,0,0,0.3); }
+
+        /* --- Ajustes: Ações Rápidas (antigo topo) viram seção secundária --- */
+        .app-actions { grid-template-columns: repeat(3, 1fr); }
+
+        /* Rodapé de anúncios sobe para não colidir com a navegação inferior */
+        .adsense-footer { bottom: 66px; border-radius: 18px 18px 0 0; }
+        .container { padding-bottom: 225px !important; }
     </style>
 </head>
 
 <body>
 
-<header>
-    <img src="https://img.estadao.com.br/thumbs/550/resources/jpg/7/0/1507409231807.jpg" alt="Santuário Nacional de Aparecida">
+<div class="hero-header">
+    <img class="hero-bg" src="https://img.estadao.com.br/thumbs/550/resources/jpg/7/0/1507409231807.jpg" alt="Santuário Nacional de Aparecida">
 
-    <div class="header-icons">
-        <button class="header-icon-btn" id="btn-menu-header" onclick="toggleMenuHeader()" title="Menu">
+    <div class="hero-topbar">
+        <button class="hero-icon-btn" onclick="document.getElementById('action-bar-container').scrollIntoView({behavior:'smooth'})" title="Menu">
             <i class="fas fa-bars"></i>
         </button>
-        <button class="header-icon-btn" onclick="abrirModalAvisos()" title="Avisos">
-            <i class="fas fa-bell"></i>
-        </button>
+        <div class="hero-topbar-right">
+            <!-- Botão de Alternar Idioma (PT / EN / ES) -->
+            <button class="hero-icon-btn" id="btn-idioma" onclick="alternarIdioma()" title="Change language / Cambiar idioma" style="width:auto; padding:0 12px; gap:6px; font-size:12px; font-weight:700;">
+                <i class="fas fa-globe"></i> <span id="lang-label">PT</span>
+            </button>
+            <!-- Botão de Alternar Modo Noturno -->
+            <button class="hero-icon-btn" onclick="toggleDarkMode()" title="Alternar Modo Escuro">
+                <i class="fas fa-moon"></i>
+            </button>
+            <button class="hero-icon-btn" onclick="abrirModalAvisos()" title="Avisos">
+                <i class="fas fa-bell"></i>
+            </button>
+        </div>
     </div>
 
-    <div class="menu-header-dropdown" id="menu-header-dropdown">
-        <button id="btn-modo-escuro" onclick="toggleDarkMode()"><i class="fas fa-moon"></i> Modo Escuro</button>
-        <button id="btn-idioma" onclick="alternarIdioma()"><i class="fas fa-globe"></i> Idioma: <span id="lang-label">PT</span></button>
+    <div class="hero-logo">
+        <div class="hero-kicker">Guia Turístico</div>
+        <h1>APARECIDA</h1>
+        <span class="hero-premium-badge">Premium</span>
+        <div class="hero-ornament">✦ ✦ ✦</div>
     </div>
 
-    <div class="header-titulo">
-        <span class="header-subtitulo" id="header-subtitulo">Guia Turístico</span>
-        <h1>Aparecida</h1>
+    <div class="hero-wave">
+        <svg viewBox="0 0 500 60" preserveAspectRatio="none"><path d="M0,30 C150,70 350,-10 500,30 L500,60 L0,60 Z" fill="var(--bg)"></path></svg>
     </div>
+</div>
 
-    <div class="wave-gold"></div>
-    <div class="wave-bg"></div>
-</header>
+<div class="search-float-wrap">
+    <div id="search-area" class="search-box search-premium">
+        <i class="fas fa-search"></i>
+        <input type="text" id="search" class="search" placeholder="Buscar lugares, hotéis, restaurantes..." onkeyup="buscar()">
+        <button class="search-mic-btn" title="Busca por voz" onclick="alert('Busca por voz em breve!')"><i class="fas fa-microphone"></i></button>
+    </div>
+</div>
 
 <div class="container">
-    
+
+    <div id="app-content">
+        <div id="menu"></div>
+        <div id="pagina-interna"></div>
+    </div>
 
     <!-- Banner de Anúncios Rotativo de 8 Segundos (Topo) -->
     <div id="banner-container">
         <img class="banner-slide active" src="https://www.guiavaledoparaiba.com.br/uploads/itens/52715/thumb/654/feira-livre-de-aparecida.jpg?1577686608" alt="Banner 1" onclick="cliqueBanner(1)">
         <img class="banner-slide" src="https://fatoelado.com/wp-content/uploads/2022/04/Anuncie-aqui.png" alt="Banner 2" onclick="cliqueBanner(2)">
         <img class="banner-slide" src="https://i.ytimg.com/vi/WqNu3wIF15Q/maxresdefault.jpg" alt="Banner 3" onclick="cliqueBanner(3)">
+        <div class="banner-dots">
+            <span class="active"></span><span></span><span></span>
+        </div>
     </div>
 
     
@@ -576,11 +735,6 @@
 
     <!-- Nova Barra de Status -->
     <div id="status-bar" class="status-bar"></div>
-
-    <div id="search-area" class="search-box">
-        <i class="fas fa-search"></i>
-        <input type="text" id="search" class="search" placeholder="O que você procura?" onkeyup="buscar()">
-    </div>
 
     <div id="action-bar-container" class="app-actions">
         <button class="btn-action btn-share" onclick="compartilharApp()">
@@ -720,11 +874,27 @@
     </div>
 
 
-    <div id="app-content">
-        <div id="menu"></div>
-        <div id="pagina-interna"></div>
-    </div>
+    <div style="height:1px;"></div>
 </div>
+
+<!-- Navegação Inferior Fixa -->
+<nav class="bottom-nav">
+    <button class="bottom-nav-item active" onclick="setNavActive(this); voltarParaCategorias();">
+        <i class="fas fa-home"></i> Início
+    </button>
+    <button class="bottom-nav-item" onclick="setNavActive(this); navFavoritos();">
+        <i class="fas fa-heart"></i> Favoritos
+    </button>
+    <button class="bottom-nav-item" onclick="setNavActive(this); abrirModalRoteiros();">
+        <i class="fas fa-route"></i> Roteiros
+    </button>
+    <button class="bottom-nav-item" onclick="setNavActive(this); abrirModalPassaporte();">
+        <i class="fas fa-stamp"></i> Passaporte
+    </button>
+    <button class="bottom-nav-item" onclick="setNavActive(this); abrirModalAvaliacao();">
+        <i class="fas fa-star"></i> Avaliar
+    </button>
+</nav>
 
 <!-- Firebase (avaliações/comentários + notificações push) -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -23426,7 +23596,6 @@ let idiomaAtual = localStorage.getItem("guia_idioma_v1") || "pt";
 
 const traducoes = {
     pt: {
-        headerSubtitulo: "Guia Turístico",
         buscarPlaceholder: "O que você procura?",
         btnCompartilhar: "Compartilhar", btnRecados: "Recados", btnRoteiros: "Roteiros",
         btnPassaporte: "Meu Passaporte", btnAvaliar: "Avaliar App", btnInstalar: "Instalar App",
@@ -23449,7 +23618,6 @@ const traducoes = {
         ]
     },
     en: {
-        headerSubtitulo: "Tourist Guide",
         buscarPlaceholder: "What are you looking for?",
         btnCompartilhar: "Share", btnRecados: "Messages", btnRoteiros: "Itineraries",
         btnPassaporte: "My Passport", btnAvaliar: "Rate App", btnInstalar: "Install App",
@@ -23472,7 +23640,6 @@ const traducoes = {
         ]
     },
     es: {
-        headerSubtitulo: "Guía Turística",
         buscarPlaceholder: "¿Qué estás buscando?",
         btnCompartilhar: "Compartir", btnRecados: "Mensajes", btnRoteiros: "Itinerarios",
         btnPassaporte: "Mi Pasaporte", btnAvaliar: "Calificar App", btnInstalar: "Instalar App",
@@ -23509,9 +23676,6 @@ function alternarIdioma() {
 
 function aplicarIdioma() {
     document.getElementById("lang-label").textContent = idiomaAtual.toUpperCase();
-
-    const elHeaderSubtitulo = document.getElementById("header-subtitulo");
-    if (elHeaderSubtitulo) elHeaderSubtitulo.textContent = t("headerSubtitulo");
 
     const buscaInput = document.getElementById("search");
     if (buscaInput) buscaInput.placeholder = t("buscarPlaceholder");
@@ -23794,26 +23958,13 @@ window.addEventListener("offline", atualizarIndicadorOffline);
 
 function toggleDarkMode() {
     document.body.classList.toggle("dark-theme");
-    const icone = document.querySelector("#btn-modo-escuro i");
-    if (!icone) return;
+    const icone = document.querySelector(".dark-mode-toggle i");
     if(document.body.classList.contains("dark-theme")) {
         icone.className = "fas fa-sun";
     } else {
         icone.className = "fas fa-moon";
     }
 }
-
-function toggleMenuHeader() {
-    document.getElementById("menu-header-dropdown").classList.toggle("aberto");
-}
-
-document.addEventListener("click", function(e) {
-    const dropdown = document.getElementById("menu-header-dropdown");
-    const botao = document.getElementById("btn-menu-header");
-    if (dropdown && dropdown.classList.contains("aberto") && !dropdown.contains(e.target) && e.target !== botao && !botao.contains(e.target)) {
-        dropdown.classList.remove("aberto");
-    }
-});
 
 function toggleFav(idx, event) {
     event.stopPropagation();
@@ -24388,35 +24539,77 @@ function renderMenu(filtro = "") {
         
         let htmlHome = `
             <div class="category-grid">
-                <div class="card-category" onclick="selecionarCategoria('Pontos Turísticos')" style="border-bottom: 4px solid #0d6efd;">
-                    <i class="fas fa-camera-retro" style="color: #0d6efd;"></i>
+                <div class="card-category" onclick="selecionarCategoria('Pontos Turísticos')">
+                    <div class="icon-circle" style="background:rgba(13,71,161,0.1);"><i class="fas fa-camera-retro" style="color:#0D47A1;"></i></div>
                     <h3>${t("catPontos")}</h3>
                 </div>
-                <div class="card-category" onclick="selecionarCategoria('Hotéis e Pousadas')" style="border-bottom: 4px solid #e17055;">
-                    <i class="fas fa-hotel" style="color: #e17055;"></i>
+                <div class="card-category" onclick="selecionarCategoria('Hotéis e Pousadas')">
+                    <div class="icon-circle" style="background:rgba(225,112,85,0.12);"><i class="fas fa-hotel" style="color:#e17055;"></i></div>
                     <h3>${t("catHoteis")}</h3>
                 </div>
-                <div class="card-category" onclick="selecionarCategoria('Bares e Restaurantes')" style="border-bottom: 4px solid #00b894;">
-                    <i class="fas fa-utensils" style="color: #00b894;"></i>
+                <div class="card-category" onclick="selecionarCategoria('Bares e Restaurantes')">
+                    <div class="icon-circle" style="background:rgba(0,184,148,0.12);"><i class="fas fa-utensils" style="color:#00b894;"></i></div>
                     <h3>${t("catBares")}</h3>
                 </div>
-                <div class="card-category" onclick="selecionarCategoria('Lazer')" style="border-bottom: 4px solid #fdcb6e;">
-                    <i class="fas fa-icons" style="color: #fdcb6e;"></i>
+                <div class="card-category" onclick="selecionarCategoria('Lazer')">
+                    <div class="icon-circle" style="background:rgba(212,175,55,0.15);"><i class="fas fa-icons" style="color:#D4AF37;"></i></div>
                     <h3>${t("catLazer")}</h3>
                 </div>
-                <div class="card-category" onclick="selecionarCategoria('Números Úteis')" style="border-bottom: 4px solid #d63031;">
-                    <i class="fas fa-phone-square-alt" style="color: #d63031;"></i>
+                <div class="card-category" onclick="selecionarCategoria('Números Úteis')">
+                    <div class="icon-circle" style="background:rgba(214,48,49,0.1);"><i class="fas fa-phone-square-alt" style="color:#d63031;"></i></div>
                     <h3>${t("catNumeros")}</h3>
                 </div>
-                <div class="card-category" onclick="selecionarCategoria('Parceiros')" style="border-bottom: 4px solid #6c5ce7;">
-                    <i class="fas fa-handshake" style="color: #6c5ce7;"></i>
+                <div class="card-category" onclick="selecionarCategoria('Parceiros')">
+                    <div class="icon-circle" style="background:rgba(108,92,231,0.12);"><i class="fas fa-handshake" style="color:#6c5ce7;"></i></div>
                     <h3>${t("catParceiros")}</h3>
                 </div>
             </div>
         `;
 
+        htmlHome += `
+            <div class="promo-card" onclick="selecionarCategoria('Pontos Turísticos')">
+                <img src="https://images.unsplash.com/photo-1600335895229-6e75511892c8?w=500" alt="Nossa Senhora Aparecida">
+                <div class="promo-card-content">
+                    <div class="promo-card-kicker">✦ DESCUBRA APARECIDA</div>
+                    <h3>Uma experiência de fé e cultura</h3>
+                    <p>Encontre os melhores lugares para visitar na cidade.</p>
+                    <button class="promo-card-btn" onclick="event.stopPropagation(); selecionarCategoria('Pontos Turísticos')">Explorar agora <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+        `;
+
+        const sugestoesNomes = ["Basílica Histórica", "Bondinhos Aéreos", "Mirante", "Morro do Cruzeiro", "Porto Itaguaçu"];
+        const sugestoesIcones = { "Turismo": "fa-cable-car", "Religioso": "fa-place-of-worship", "Histórico": "fa-landmark" };
+        let cardsSugestao = "";
+        sugestoesNomes.forEach(nome => {
+            const idx = paginas.findIndex(p => p.nome === nome);
+            if (idx !== -1) {
+                const p = paginas[idx];
+                const matchImg = p.html.match(/<img[^>]+src="([^"]+)"/);
+                const imgSrc = matchImg ? matchImg[1] : "";
+                const icone = sugestoesIcones[p.cat] || "fa-map-marker-alt";
+                cardsSugestao += `
+                    <div class="card-sugestao" onclick="abrir(${idx})">
+                        <div class="sugestao-img-wrap">
+                            <img src="${imgSrc}" loading="lazy" alt="${p.nome}">
+                            <div class="sugestao-icon"><i class="fas ${icone}"></i></div>
+                        </div>
+                        <div class="sugestao-info">
+                            <h4>${p.nome}</h4>
+                            <span>${p.cat}</span>
+                        </div>
+                    </div>`;
+            }
+        });
+        if (cardsSugestao) {
+            htmlHome += `
+                <div class="sugestoes-header"><h2>Sugestões para você</h2></div>
+                <div class="sugestoes-scroll">${cardsSugestao}</div>
+            `;
+        }
+
         if (favoritos.length > 0) {
-            htmlHome += `<div style="margin-top:20px; font-weight:bold; font-size:14px; color:var(--primary); text-transform:uppercase;"><i class="fas fa-heart"></i> ${t("meusFavoritos")}</div>`;
+            htmlHome += `<div id="favoritos-home" style="margin-top:20px; font-weight:bold; font-size:14px; color:var(--primary); text-transform:uppercase;"><i class="fas fa-heart"></i> ${t("meusFavoritos")}</div>`;
             favoritos.forEach(favId => {
                 const i = paginas.findIndex(p => p.id === favId);
                 if (i !== -1) {
@@ -24537,6 +24730,24 @@ function voltarParaCategorias() {
     renderMenu();
 }
 
+// Navegação inferior fixa
+function setNavActive(el) {
+    document.querySelectorAll(".bottom-nav-item").forEach(b => b.classList.remove("active"));
+    el.classList.add("active");
+}
+
+function navFavoritos() {
+    if (favoritos.length === 0) {
+        alert("Você ainda não adicionou favoritos. Toque no coração ❤️ em qualquer local para salvar!");
+        return;
+    }
+    voltarParaCategorias();
+    requestAnimationFrame(() => {
+        const elFav = document.getElementById("favoritos-home");
+        if (elFav) elFav.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+}
+
 function buscar() {
     let termo = document.getElementById("search").value;
     renderMenu(termo);
@@ -24613,6 +24824,12 @@ function iniciarBannerRandomico() {
         }
         
         slides[proximoIndice].classList.add("active");
+
+        const dots = document.querySelectorAll(".banner-dots span");
+        if (dots.length === slides.length) {
+            dots.forEach(d => d.classList.remove("active"));
+            dots[proximoIndice].classList.add("active");
+        }
     }, 8000);
 }
 
