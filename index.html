@@ -1,5 +1,4 @@
 
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -125,18 +124,17 @@
 
         /* Bloco Fixo AdSense no Rodapé */
         .adsense-footer {
-            position: fixed;
-            bottom: 0; left: 50%;
-            transform: translateX(-50%);
+            position: static;
             width: 100%;
-            max-width: 600px;
+            max-width: none;
+            transform: none;
             background: #ffffff;
-            box-shadow: 0 -4px 20px rgba(0,0,0,0.12);
-            z-index: 999;
-            padding: 10px 12px;
-            border-top: 3px solid #4285f4;
-            font-family: 'Poppins', sans-serif;
-            transition: background 0.3s, border-color 0.3s;
+            border-radius: 20px;
+            box-shadow: 0 3px 14px rgba(8,30,74,0.06);
+            border: 1px solid rgba(8,30,74,0.05);
+            border-top: none;
+            padding: 14px 14px 16px;
+            margin: 4px 0 18px;
         }
         .adsense-tag {
             font-size: 9px;
@@ -198,30 +196,31 @@
         .card-category h3 { margin: 0; font-size: 13px; font-weight: 600; color: #333; line-height: 1.3; }
 
         /* Botões de Ação do App */
-        .app-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; margin-bottom: 25px; }
-        .btn-action {
-            background: white;
-            border: none;
-            padding: 12px;
-            border-radius: 12px;
-            font-family: 'Poppins', sans-serif;
-            font-size: 13px;
-            font-weight: 600;
-            color: #444;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
-            transition: all 0.2s;
+        .app-actions {
+            display: flex; justify-content: space-around; gap: 4px;
+            margin-top: 0; margin-bottom: 22px; padding: 0 4px;
         }
-        .btn-action:hover { background: #f8f9fa; transform: translateY(-2px); }
-        .btn-share { color: #0d6efd; }
-        .btn-recados { color: #17a2b8; }
-        .btn-passport { color: #9b59b6; }
-        .btn-rate { color: #ffc107; }
-        .btn-install { color: #28a745; }
+        .btn-action {
+            background: none; border: none; box-shadow: none;
+            font-family: 'Poppins', sans-serif; font-size: 10.5px; font-weight: 600; color: var(--text-sub);
+            cursor: pointer; display: flex; flex-direction: column; align-items: center;
+            justify-content: center; gap: 6px; flex: 1; min-width: 0; padding: 4px 2px;
+        }
+        .btn-action i {
+            width: 44px; height: 44px; border-radius: 50%; background: #fff;
+            display: flex; align-items: center; justify-content: center; font-size: 16px;
+            box-shadow: 0 3px 10px rgba(8,30,74,0.08); transition: transform 0.2s;
+        }
+        .btn-action:active i { transform: scale(0.92); }
+        .btn-action span, .btn-action { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        body.dark-theme .btn-action i { background: #1e1e1e !important; }
+        body.dark-theme .btn-action { color: #ccc !important; }
+        .btn-share i { color: #0d6efd; }
+        .btn-recados i { color: #17a2b8; }
+        .btn-passport i { color: #9b59b6; }
+        .btn-rate i { color: #D4AF37; }
+        .btn-install i { color: #28a745; }
+        .btn-roteiro i { color: #0D47A1; }
         #btn-checkin { color: #555; }
         #btn-checkin.checkin-feito { color: #25D366; background: #e9f9ee; }
 
@@ -486,12 +485,11 @@
         .hero-header img.hero-bg {
             width: 100%; height: 100%; object-fit: cover;
             position: absolute; top: 0; left: 0;
-            opacity: 0.85;
         }
         .hero-header::before {
             content: "";
             position: absolute; inset: 0;
-            background: linear-gradient(180deg, rgba(8,30,74,0.92) 0%, rgba(8,30,74,0.55) 30%, rgba(8,30,74,0.25) 55%, rgba(8,30,74,0.75) 100%);
+            background: linear-gradient(180deg, rgba(8,30,74,0.80) 0%, rgba(8,30,74,0.25) 26%, rgba(8,30,74,0.05) 48%, rgba(8,30,74,0.45) 100%);
             z-index: 1;
         }
         .hero-wave { position: absolute; bottom: -1px; left: 0; width: 100%; height: 60px; z-index: 2; line-height: 0; }
@@ -536,21 +534,39 @@
         .hero-ornament { margin-top: 10px; color: var(--accent); opacity: 0.65; font-size: 13px; }
 
         /* --- Barra de busca flutuante --- */
-        .search-float-wrap { position: relative; z-index: 4; margin-top: -34px; padding: 0 18px; }
-        .search-box.search-premium {
-            background: #fff; border-radius: 999px; box-shadow: 0 14px 30px rgba(8,30,74,0.18);
-            display: flex; align-items: center; padding: 4px 6px 4px 20px; margin-bottom: 0;
+        .search-float-wrap { position: relative; z-index: 4; margin-top: -24px; padding: 0 18px; }
+
+        /* Detalhe dourado de linhas onduladas que espia por trás do card de busca */
+        .hero-search-deco {
+            position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%);
+            height: 80px; z-index: 1; pointer-events: none;
         }
-        .search-box.search-premium i.fa-search { position: static; color: var(--text-sub); transform: none; }
+        .hero-search-deco-lines { position: absolute; top: 50%; transform: translateY(-50%); width: 110px; height: 80px; }
+        .hero-search-deco-lines.left { left: -14px; }
+        .hero-search-deco-lines.right { right: -14px; transform: translateY(-50%) scaleX(-1); }
+        .hero-search-deco-lines path { fill: none; stroke-width: 2.2; stroke-linecap: round; }
+        .search-box.search-premium { position: relative; z-index: 2; }
+        .search-box.search-premium {
+            background: #fff; border-radius: 999px; box-shadow: 0 8px 18px rgba(8,30,74,0.14);
+            display: flex; align-items: center; padding: 0 16px; margin-bottom: 0; height: 46px;
+        }
+        /* Neutraliza a regra antiga ".search-box i" (posicionamento absoluto) para QUALQUER
+           ícone dentro da busca premium, de forma definitiva — evita depender de !important
+           espalhado e garante que nada (busca ou microfone) escape do card. */
+        .search-box.search-premium i { position: static; left: auto; top: auto; transform: none; }
+        .search-box.search-premium i.fa-search { color: var(--text-sub); font-size: 14px; }
         .search-box.search-premium input.search {
-            border: none; box-shadow: none; padding: 14px 10px; font-size: 15px; background: transparent;
+            border: none; box-shadow: none; padding: 0 8px; font-size: 13.5px; background: transparent; height: 100%;
+            width: auto; flex: 1; min-width: 0;
         }
         .search-mic-btn {
-            width: 42px; height: 42px; border-radius: 50%; background: var(--bg);
-            display: flex; align-items: center; justify-content: center; color: var(--primary);
-            flex-shrink: 0; border: none; cursor: pointer;
+            background: none; color: var(--text-sub); flex-shrink: 0; border: none; cursor: pointer;
+            margin-left: auto; width: 30px; height: 30px; padding: 0; font-size: 14px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 50%; box-sizing: border-box; position: relative; z-index: 3;
         }
-        .search-mic-btn i { position: static !important; transform: none !important; color: inherit !important; }
+        .search-mic-btn:active { background: rgba(13,71,161,0.08); }
+        .search-mic-btn i { color: inherit; font-size: 14px; }
 
         .container { padding-top: 22px; }
 
@@ -647,22 +663,20 @@
         .bottom-nav-item.active { color: var(--primary); transform: translateY(-2px); }
         body.dark-theme .bottom-nav { background: #1e1e1e !important; box-shadow: 0 -4px 18px rgba(0,0,0,0.3); }
 
-        /* --- Ajustes: Ações Rápidas (antigo topo) viram seção secundária --- */
-        .app-actions { grid-template-columns: repeat(3, 1fr); }
+        /* Ações Rápidas agora ficam como ícones compactos logo abaixo da busca */
 
         /* Rodapé de anúncios sobe para não colidir com a navegação inferior */
-        .adsense-footer { bottom: 66px; border-radius: 18px 18px 0 0; }
-        .container { padding-bottom: 225px !important; }
+        .container { padding-bottom: 96px !important; }
     </style>
 </head>
 
 <body>
 
 <div class="hero-header">
-    <img class="hero-bg" src="https://img.estadao.com.br/thumbs/550/resources/jpg/7/0/1507409231807.jpg" alt="Santuário Nacional de Aparecida">
+    <img class="hero-bg" src="https://i.imgur.com/RZX4SGY.png" alt="Santuário Nacional de Aparecida">
 
     <div class="hero-topbar">
-        <button class="hero-icon-btn" onclick="document.getElementById('action-bar-container').scrollIntoView({behavior:'smooth'})" title="Menu">
+        <button class="hero-icon-btn" onclick="window.scrollTo({top:0, behavior:'smooth'})" title="Início">
             <i class="fas fa-bars"></i>
         </button>
         <div class="hero-topbar-right">
@@ -673,6 +687,9 @@
             <!-- Botão de Alternar Modo Noturno -->
             <button class="hero-icon-btn" onclick="toggleDarkMode()" title="Alternar Modo Escuro">
                 <i class="fas fa-moon"></i>
+            </button>
+            <button class="hero-icon-btn" onclick="compartilharApp()" title="Compartilhar App">
+                <i class="fas fa-share-alt"></i>
             </button>
             <button class="hero-icon-btn" onclick="abrirModalAvisos()" title="Avisos">
                 <i class="fas fa-bell"></i>
@@ -693,19 +710,40 @@
 </div>
 
 <div class="search-float-wrap">
+    <div class="hero-search-deco" aria-hidden="true">
+        <svg class="hero-search-deco-lines left" viewBox="0 0 120 80" preserveAspectRatio="none">
+            <defs>
+                <linearGradient id="waveFadeL" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stop-color="#D4AF37" stop-opacity="0"></stop>
+                    <stop offset="55%" stop-color="#D4AF37" stop-opacity="0.55"></stop>
+                    <stop offset="100%" stop-color="#D4AF37" stop-opacity="0.95"></stop>
+                </linearGradient>
+            </defs>
+            <path d="M-10,10 C30,-6 65,34 130,12" stroke="url(#waveFadeL)"></path>
+            <path d="M-10,30 C30,12 65,54 130,32" stroke="url(#waveFadeL)"></path>
+            <path d="M-10,50 C30,32 65,74 130,52" stroke="url(#waveFadeL)"></path>
+        </svg>
+        <svg class="hero-search-deco-lines right" viewBox="0 0 120 80" preserveAspectRatio="none">
+            <defs>
+                <linearGradient id="waveFadeR" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stop-color="#D4AF37" stop-opacity="0"></stop>
+                    <stop offset="55%" stop-color="#D4AF37" stop-opacity="0.55"></stop>
+                    <stop offset="100%" stop-color="#D4AF37" stop-opacity="0.95"></stop>
+                </linearGradient>
+            </defs>
+            <path d="M-10,10 C30,-6 65,34 130,12" stroke="url(#waveFadeR)"></path>
+            <path d="M-10,30 C30,12 65,54 130,32" stroke="url(#waveFadeR)"></path>
+            <path d="M-10,50 C30,32 65,74 130,52" stroke="url(#waveFadeR)"></path>
+        </svg>
+    </div>
     <div id="search-area" class="search-box search-premium">
         <i class="fas fa-search"></i>
-        <input type="text" id="search" class="search" placeholder="Buscar lugares, hotéis, restaurantes..." onkeyup="buscar()">
-        <button class="search-mic-btn" title="Busca por voz" onclick="alert('Busca por voz em breve!')"><i class="fas fa-microphone"></i></button>
+        <input type="text" id="search" class="search" placeholder="O que voce procura?" onkeyup="buscar()">
+        
     </div>
 </div>
 
 <div class="container">
-
-    <div id="app-content">
-        <div id="menu"></div>
-        <div id="pagina-interna"></div>
-    </div>
 
     <!-- Banner de Anúncios Rotativo de 8 Segundos (Topo) -->
     <div id="banner-container">
@@ -715,6 +753,29 @@
         <div class="banner-dots">
             <span class="active"></span><span></span><span></span>
         </div>
+    </div>
+
+    <div id="action-bar-container" class="app-actions">
+        <button class="btn-action btn-recados" onclick="abrirMuralRecados()">
+            <i class="fas fa-comment-dots"></i> Recados
+        </button>
+        <button class="btn-action btn-roteiro" onclick="abrirModalRoteiros()">
+            <i class="fas fa-route"></i> Roteiros
+        </button>
+        <button class="btn-action btn-passport" onclick="abrirModalPassaporte()">
+            <i class="fas fa-stamp"></i> Meu Passaporte
+        </button>
+        <button class="btn-action btn-rate" onclick="abrirModalAvaliacao()">
+            <i class="fas fa-star"></i> Avaliar App
+        </button>
+        <button class="btn-action btn-install" id="installButton" style="display:none;">
+            <i class="fas fa-download"></i> Instalar App
+        </button>
+    </div>
+
+    <div id="app-content">
+        <div id="menu"></div>
+        <div id="pagina-interna"></div>
     </div>
 
     
@@ -735,27 +796,6 @@
 
     <!-- Nova Barra de Status -->
     <div id="status-bar" class="status-bar"></div>
-
-    <div id="action-bar-container" class="app-actions">
-        <button class="btn-action btn-share" onclick="compartilharApp()">
-            <i class="fas fa-share-alt"></i> Compartilhar
-        </button>
-        <button class="btn-action btn-recados" onclick="abrirMuralRecados()">
-            <i class="fas fa-comment-dots"></i> Recados
-        </button>
-        <button class="btn-action btn-roteiro" onclick="abrirModalRoteiros()">
-            <i class="fas fa-route"></i> Roteiros
-        </button>
-        <button class="btn-action btn-passport" onclick="abrirModalPassaporte()">
-            <i class="fas fa-stamp"></i> Meu Passaporte
-        </button>
-        <button class="btn-action btn-rate" onclick="abrirModalAvaliacao()">
-            <i class="fas fa-star"></i> Avaliar App
-        </button>
-        <button class="btn-action btn-install" id="installButton" style="display:none;">
-            <i class="fas fa-download"></i> Instalar App
-        </button>
-    </div>
 
     <div id="modalPassaporte" class="modal">
         <div class="modal-content">
@@ -900,6 +940,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
 <script>
 // ==================== FIREBASE (avaliações, comentários e notificações push) ====================
@@ -920,6 +961,12 @@ const firebaseConfigured = !!(firebaseConfig.apiKey && !firebaseConfig.apiKey.st
 let db = null;
 let messaging = null;
 
+// Identidade anônima do visitante (usada para provar, no servidor, quem é o dono
+// de cada recado — ver regras do Firestore). authReadyPromise resolve assim que
+// o login anônimo terminar (ou falhar, sem travar o app).
+let currentUid = null;
+let authReadyPromise = Promise.resolve(null);
+
 if (firebaseConfigured) {
     firebase.initializeApp(firebaseConfig);
     db = firebase.firestore();
@@ -928,6 +975,18 @@ if (firebaseConfigured) {
             console.warn("Firebase Messaging não disponível neste navegador:", e);
         }
     }
+    authReadyPromise = new Promise((resolve) => {
+        firebase.auth().onAuthStateChanged(user => {
+            if (user) {
+                currentUid = user.uid;
+                resolve(user.uid);
+            }
+        });
+        firebase.auth().signInAnonymously().catch(err => {
+            console.warn("Login anônimo do Firebase falhou (recados ficarão só leitura):", err);
+            resolve(null);
+        });
+    });
 } else {
     console.warn("Firebase ainda não configurado: preencha firebaseConfig no início do script para ativar avaliações, comentários e notificações push.");
 }
@@ -23596,7 +23655,7 @@ let idiomaAtual = localStorage.getItem("guia_idioma_v1") || "pt";
 
 const traducoes = {
     pt: {
-        buscarPlaceholder: "O que você procura?",
+        buscarPlaceholder: "O que voce procura?",
         btnCompartilhar: "Compartilhar", btnRecados: "Recados", btnRoteiros: "Roteiros",
         btnPassaporte: "Meu Passaporte", btnAvaliar: "Avaliar App", btnInstalar: "Instalar App",
         catPontos: "Pontos Turísticos", catHoteis: "Hotéis e Pousadas", catBares: "Bares e Restaurantes",
@@ -23681,7 +23740,7 @@ function aplicarIdioma() {
     if (buscaInput) buscaInput.placeholder = t("buscarPlaceholder");
 
     const mapaBotoes = {
-        ".btn-share": "btnCompartilhar", ".btn-recados": "btnRecados", ".btn-roteiro": "btnRoteiros",
+        ".btn-recados": "btnRecados", ".btn-roteiro": "btnRoteiros",
         ".btn-passport": "btnPassaporte", ".btn-rate": "btnAvaliar", ".btn-install": "btnInstalar"
     };
     Object.keys(mapaBotoes).forEach(sel => {
@@ -24022,6 +24081,11 @@ function atualizarBotaoCheckin(id) {
 // Em vez de depender de position:fixed (que alguns WebViews Android renderizam errado),
 // posicionamos o overlay manualmente no ponto de scroll atual e travamos o scroll do fundo.
 function abrirModalOverlay(id) {
+    // Fecha qualquer outro modal que já esteja aberto antes de abrir este,
+    // para eles nunca ficarem empilhados um atrás do outro.
+    document.querySelectorAll(".modal").forEach(m => {
+        if (m.id !== id) m.style.display = "none";
+    });
     const el = document.getElementById(id);
     const scrollY = window.scrollY || window.pageYOffset || 0;
     el.style.top = scrollY + "px";
@@ -24033,6 +24097,17 @@ function fecharModalOverlay(id) {
     document.getElementById(id).style.display = "none";
     document.body.style.overflow = "";
 }
+
+// Fecha o modal ao clicar fora do card (no fundo escurecido), sem precisar
+// caçar o botão de fechar — aplica-se a todos os modais automaticamente.
+document.querySelectorAll(".modal").forEach(modal => {
+    modal.addEventListener("click", function(e) {
+        if (e.target === modal) {
+            modal.style.display = "none";
+            document.body.style.overflow = "";
+        }
+    });
+});
 
 // Confirmação customizada (não mostra o link/URL do app, diferente do confirm() nativo do navegador)
 function confirmarAcao(mensagem, aoConfirmar) {
@@ -24293,19 +24368,23 @@ function carregarRecados() {
 
     lista.innerHTML = '<p style="color:#999; font-size:13px; text-align:center;">Carregando recados...</p>';
 
-    // orderBy em campo único não exige índice composto no Firestore.
-    db.collection("recados")
-        .orderBy("criadoEm", "desc")
-        .limit(50)
-        .get()
-        .then(snapshot => {
-            recadosAtuais = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-            renderRecados();
-        })
-        .catch(err => {
-            console.error("Erro ao carregar recados:", err);
-            lista.innerHTML = '<p style="color:#999; font-size:13px; text-align:center;">Não foi possível carregar os recados agora. (' + (err && err.message ? err.message : 'erro desconhecido') + ')</p>';
-        });
+    // Espera o login anônimo terminar para já sabermos o uid do visitante e
+    // mostrar corretamente os botões de editar/excluir nos recados dele.
+    authReadyPromise.then(() => {
+        // orderBy em campo único não exige índice composto no Firestore.
+        db.collection("recados")
+            .orderBy("criadoEm", "desc")
+            .limit(50)
+            .get()
+            .then(snapshot => {
+                recadosAtuais = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+                renderRecados();
+            })
+            .catch(err => {
+                console.error("Erro ao carregar recados:", err);
+                lista.innerHTML = '<p style="color:#999; font-size:13px; text-align:center;">Não foi possível carregar os recados agora. (' + (err && err.message ? err.message : 'erro desconhecido') + ')</p>';
+            });
+    });
 }
 
 function formatarDataRecado(criadoEm) {
@@ -24324,7 +24403,10 @@ function renderRecados() {
     }
 
     lista.innerHTML = recadosAtuais.map(r => {
-        const ehMeu = meusRecados.includes(r.id);
+        // "Meu" agora é decidido pelo uid gravado no documento (confirmado pelo
+        // Firebase Auth), não só pelo localStorage — o localStorage sozinho não
+        // impede que o Firestore aceite a edição/exclusão de qualquer um.
+        const ehMeu = !!(r.uid && currentUid && r.uid === currentUid);
 
         // Card em modo de edição
         if (ehMeu && recadoEditandoId === r.id) {
@@ -24428,18 +24510,28 @@ function enviarRecado() {
         return;
     }
 
-    db.collection("recados").add({
-        nome: nome || "Anônimo",
-        mensagem: mensagem,
-        criadoEm: firebase.firestore.FieldValue.serverTimestamp()
-    }).then((docRef) => {
-        salvarMeuRecado(docRef.id);
-        nomeEl.value = "";
-        textoEl.value = "";
-        carregarRecados();
-    }).catch(err => {
-        console.error("Erro ao enviar recado:", err);
-        alert("Não foi possível enviar seu recado agora. (" + (err && err.message ? err.message : 'erro desconhecido') + ")");
+    // Espera o login anônimo terminar (normalmente já está pronto) para gravar o
+    // uid do autor — é isso que garante, no servidor, que só ele poderá
+    // editar/excluir esse recado depois.
+    authReadyPromise.then((uid) => {
+        if (!uid) {
+            alert("Não foi possível identificar seu dispositivo agora. Tente novamente em instantes.");
+            return;
+        }
+        db.collection("recados").add({
+            nome: nome || "Anônimo",
+            mensagem: mensagem,
+            criadoEm: firebase.firestore.FieldValue.serverTimestamp(),
+            uid: uid
+        }).then((docRef) => {
+            salvarMeuRecado(docRef.id);
+            nomeEl.value = "";
+            textoEl.value = "";
+            carregarRecados();
+        }).catch(err => {
+            console.error("Erro ao enviar recado:", err);
+            alert("Não foi possível enviar seu recado agora. (" + (err && err.message ? err.message : 'erro desconhecido') + ")");
+        });
     });
 }
 
@@ -24534,7 +24626,7 @@ function renderMenu(filtro = "") {
 
     // TELA INICIAL LIMPA: Estrutura expandida para as 6 categorias solicitadas (Grades balanceadas de 2 colunas)
     if (categoriaAtual === null) {
-        actionBar.style.display = "grid";
+        actionBar.style.display = "flex";
         bannerArea.style.display = "block";
         
         let htmlHome = `
@@ -24734,6 +24826,10 @@ function voltarParaCategorias() {
 function setNavActive(el) {
     document.querySelectorAll(".bottom-nav-item").forEach(b => b.classList.remove("active"));
     el.classList.add("active");
+    // Fecha qualquer modal aberto ao trocar de aba pelo rodapé (cobre Início/Favoritos,
+    // que não passam por abrirModalOverlay).
+    document.querySelectorAll(".modal").forEach(m => { m.style.display = "none"; });
+    document.body.style.overflow = "";
 }
 
 function navFavoritos() {
