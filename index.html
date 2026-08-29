@@ -666,16 +666,79 @@
 
         /* Rodapé de anúncios sobe para não colidir com a navegação inferior */
         .container { padding-bottom: 96px !important; }
+
+        /* --- Menu lateral (drawer) aberto pelo ícone hambúrguer --- */
+        .side-drawer-overlay {
+            position: fixed; inset: 0; background: rgba(8,30,74,0.45);
+            z-index: 2000; opacity: 0; pointer-events: none; transition: opacity 0.25s;
+        }
+        .side-drawer-overlay.aberto { opacity: 1; pointer-events: auto; }
+        .side-drawer {
+            position: fixed; top: 0; left: 0; height: 100%; width: 82%; max-width: 320px;
+            background: #fff; z-index: 2001; box-shadow: 4px 0 24px rgba(0,0,0,0.25);
+            transform: translateX(-100%); transition: transform 0.28s ease;
+            display: flex; flex-direction: column; overflow-y: auto;
+        }
+        .side-drawer.aberto { transform: translateX(0); }
+        .side-drawer-header {
+            background: linear-gradient(120deg, var(--primary-dark), var(--primary));
+            color: #fff; padding: 28px 20px 20px; position: relative;
+        }
+        .side-drawer-header h3 { margin: 0 0 4px; font-size: 17px; font-weight: 700; }
+        .side-drawer-header p { margin: 0; font-size: 12px; opacity: 0.85; }
+        .side-drawer-close {
+            position: absolute; top: 14px; right: 14px; background: rgba(255,255,255,0.15);
+            border: none; color: #fff; width: 32px; height: 32px; border-radius: 10px;
+            font-size: 15px; cursor: pointer;
+        }
+        .side-drawer-item {
+            display: flex; align-items: center; gap: 14px; padding: 15px 20px;
+            border: none; background: none; width: 100%; text-align: left;
+            font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 600;
+            color: var(--text); cursor: pointer; border-bottom: 1px solid #f0f2f5;
+        }
+        .side-drawer-item i { width: 20px; text-align: center; color: var(--primary); font-size: 16px; }
+        .side-drawer-item:active { background: #f5f7fa; }
+        .side-drawer-footer { margin-top: auto; padding: 16px 20px; font-size: 11px; color: #9aa3b2; text-align: center; }
+        body.dark-theme .side-drawer { background: #1e1e1e !important; }
+        body.dark-theme .side-drawer-item { color: #fff !important; border-bottom-color: #333 !important; }
+        body.dark-theme .side-drawer-item:active { background: #2a2a2a !important; }
     </style>
 </head>
 
 <body>
 
+<!-- Menu lateral (drawer) aberto pelo ícone hambúrguer -->
+<div class="side-drawer-overlay" id="drawerOverlay" onclick="fecharMenuLateral()"></div>
+<nav class="side-drawer" id="sideDrawer">
+    <div class="side-drawer-header">
+        <button class="side-drawer-close" onclick="fecharMenuLateral()"><i class="fas fa-times"></i></button>
+        <h3>Guia Turístico Aparecida</h3>
+        <p>Menu</p>
+    </div>
+    <button class="side-drawer-item" onclick="fecharMenuLateral(); abrirMuralRecados();">
+        <i class="fas fa-comment-dots"></i> Mural de Recados
+    </button>
+    <button class="side-drawer-item" onclick="fecharMenuLateral(); ativarNotificacoes();">
+        <i class="fas fa-bell"></i> Ativar Notificações
+    </button>
+    <button class="side-drawer-item" onclick="fecharMenuLateral(); abrirContatoSuporte();">
+        <i class="fas fa-headset"></i> Fale Conosco
+    </button>
+    <button class="side-drawer-item" onclick="fecharMenuLateral(); compartilharApp();">
+        <i class="fas fa-share-alt"></i> Compartilhar App
+    </button>
+    <button class="side-drawer-item" onclick="fecharMenuLateral(); abrirModalPrivacidade();">
+        <i class="fas fa-shield-alt"></i> Política de Privacidade
+    </button>
+    <div class="side-drawer-footer">Guia Turístico Aparecida - Premium</div>
+</nav>
+
 <div class="hero-header">
     <img class="hero-bg" src="https://i.imgur.com/RZX4SGY.png" alt="Santuário Nacional de Aparecida">
 
     <div class="hero-topbar">
-        <button class="hero-icon-btn" onclick="window.scrollTo({top:0, behavior:'smooth'})" title="Início">
+        <button class="hero-icon-btn" onclick="abrirMenuLateral()" title="Menu">
             <i class="fas fa-bars"></i>
         </button>
         <div class="hero-topbar-right">
@@ -23604,7 +23667,14 @@ Localizado no pátio do Santuário Nacional, o Centro de Apoio ao Romeiro foi in
 <br>
 <center>
 <p><a href="mailto:guiaaparecidapotim@hotmail.com"><img src="https://i.imgur.com/xPuipxE.png" width="300px;" height="70px" / loading="lazy" alt="Contato / Suporte">
-</center></p>` }
+</center></p>` },
+    { nome: "Política de Privacidade", cat: "Informação", html: `<h3>Política de Privacidade</h3>
+<p>Este aplicativo (Guia Turístico Aparecida) foi criado para ajudar visitantes a conhecer pontos turísticos, hotéis, restaurantes e serviços em Aparecida/SP.</p>
+<p><b>Dados que coletamos:</b> comentários e avaliações que você escreve sobre os locais, mensagens do Mural de Recados, e um token técnico para envio de notificações push (caso você ative essa opção). Também é feito um login anônimo automático, sem necessidade de cadastro, e-mail ou senha, apenas para vincular o conteúdo enviado ao seu dispositivo.</p>
+<p><b>O que NÃO coletamos:</b> não pedimos nome completo, CPF, endereço, localização em tempo real ou dados de pagamento.</p>
+<p><b>Como usamos os dados:</b> os comentários e recados enviados ficam visíveis publicamente dentro do app para outros visitantes. O token de notificação é usado apenas para enviar avisos e novidades sobre Aparecida.</p>
+<p><b>Compartilhamento:</b> não vendemos nem compartilhamos seus dados com terceiros para fins de publicidade.</p>
+<p><b>Contato:</b> dúvidas sobre privacidade podem ser enviadas para <a href="mailto:aparecidaguiaturistico@gmail.com">aparecidaguiaturistico@gmail.com</a>.</p>` },
 ];
 
 // Gera um ID estável para cada item, baseado no nome (e não na posição no array).
@@ -24075,6 +24145,24 @@ function atualizarBotaoCheckin(id) {
         ? '<i class="fas fa-check-circle"></i> Visitado! Ver meu passaporte'
         : '<i class="far fa-circle"></i> Marcar como visitado';
 }
+
+// ==================== MENU LATERAL (hambúrguer) ====================
+function abrirMenuLateral() {
+    document.getElementById("sideDrawer").classList.add("aberto");
+    document.getElementById("drawerOverlay").classList.add("aberto");
+    document.body.style.overflow = "hidden";
+}
+function fecharMenuLateral() {
+    document.getElementById("sideDrawer").classList.remove("aberto");
+    document.getElementById("drawerOverlay").classList.remove("aberto");
+    document.body.style.overflow = "";
+}
+function abrirPaginaPorNome(nome) {
+    const i = paginas.findIndex(p => p.nome === nome);
+    if (i !== -1) abrir(i);
+}
+function abrirContatoSuporte() { abrirPaginaPorNome("Contato / Suporte"); }
+function abrirModalPrivacidade() { abrirPaginaPorNome("Política de Privacidade"); }
 
 // ==================== HELPERS DE MODAL (compatível com WebView de apps nativos) ====================
 // Em vez de depender de position:fixed (que alguns WebViews Android renderizam errado),
