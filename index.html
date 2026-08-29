@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -1017,6 +1018,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics-compat.js"></script>
 
 <script>
 // ==================== FIREBASE (avaliações, comentários e notificações push) ====================
@@ -1030,12 +1032,29 @@ const firebaseConfig = {
     storageBucket: "appguia-7a3a7.firebasestorage.app",
     messagingSenderId: "945249750199",
     appId: "1:945249750199:web:a2efaa2f3db1a06ba39132"
-};
-const FIREBASE_VAPID_KEY = "BOfe5x7ciaKdW-j693-YuSmTaaxZ5SrXFPd1Kz8iA-0UZRGu-q__esFduxUEhCu82z3U9M-mwfwkHIMIkWDllCM";
+};const FIREBASE_VAPID_KEY = "BOfe5x7ciaKdW-j693-YuSmTaaxZ5SrXFPd1Kz8iA-0UZRGu-q__esFduxUEhCu82z3U9M-mwfwkHIMIkWDllCM";
+
+// Firebase Analytics (opcional): preencha depois de ativar o Google Analytics no
+// seu projeto Firebase (Console > Configurações do projeto > Integrações > Google
+// Analytics > Ativar). Isso gera o "Measurement ID" (formato G-XXXXXXXXXX) que
+// vai aqui. Enquanto ficar vazio, o app funciona normalmente e o Analytics
+// simplesmente não é carregado - nada quebra.
+const FIREBASE_MEASUREMENT_ID = "G-5LJ3HDLQJH";
 
 const firebaseConfigured = !!(firebaseConfig.apiKey && !firebaseConfig.apiKey.startsWith("COLE_AQUI"));
 let db = null;
 let messaging = null;
+let analytics = null;
+
+// Envia um evento pro Firebase Analytics, se estiver configurado. Chamar essa
+// função em qualquer lugar do app nunca quebra nada, mesmo sem Analytics ativo.
+function logEvento(nome, params) {
+    try {
+        if (analytics) firebase.analytics().logEvent(nome, params || {});
+    } catch (e) {
+        console.warn("Falha ao registrar evento de analytics:", nome, e);
+    }
+}
 
 // Identidade anônima do visitante (usada para provar, no servidor, quem é o dono
 // de cada recado — ver regras do Firestore). authReadyPromise resolve assim que
@@ -1044,8 +1063,18 @@ let currentUid = null;
 let authReadyPromise = Promise.resolve(null);
 
 if (firebaseConfigured) {
+    if (FIREBASE_MEASUREMENT_ID) firebaseConfig.measurementId = FIREBASE_MEASUREMENT_ID;
     firebase.initializeApp(firebaseConfig);
     db = firebase.firestore();
+    if (FIREBASE_MEASUREMENT_ID) {
+        try {
+            firebase.analytics();
+            analytics = true;
+            logEvento("app_aberto");
+        } catch (e) {
+            console.warn("Firebase Analytics não pôde ser iniciado:", e);
+        }
+    }
     if ('serviceWorker' in navigator && 'PushManager' in window) {
         try { messaging = firebase.messaging(); } catch (e) {
             console.warn("Firebase Messaging não disponível neste navegador:", e);
@@ -23813,6 +23842,7 @@ function alternarIdioma() {
     const idx = idiomas.indexOf(idiomaAtual);
     idiomaAtual = idiomas[(idx + 1) % idiomas.length];
     localStorage.setItem("guia_idioma_v1", idiomaAtual);
+    logEvento("idioma_alterado", { idioma: idiomaAtual });
     aplicarIdioma();
 }
 
@@ -24113,8 +24143,10 @@ function toggleFav(idx, event) {
     const id = paginas[idx].id;
     if (favoritos.includes(id)) {
         favoritos = favoritos.filter(f => f !== id);
+        logEvento("favorito_removido", { local_id: id });
     } else {
         favoritos.push(id);
+        logEvento("favorito_adicionado", { local_id: id });
     }
     localStorage.setItem("guia_favoritos_v2", JSON.stringify(favoritos));
     renderMenu();
@@ -24177,6 +24209,50 @@ function abrirPaginaPorNome(nome) {
 }
 function abrirContatoSuporte() { abrirPaginaPorNome("Contato / Suporte"); }
 function abrirModalPrivacidade() { abrirPaginaPorNome("Política de Privacidade"); }
+
+// ==================== MODERAÇÃO: denúncias e filtro básico de palavras ====================
+// Lista simples e não exaustiva; dá pra completar com mais termos depois.
+const PALAVRAS_BLOQUEADAS = ["porra", "caralho", "buceta", "puta", "viado", "arrombado", "corno", "vagabunda", "desgraça"];
+function contemPalavraBloqueada(texto) {
+    const limpo = (texto || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    return PALAVRAS_BLOQUEADAS.some(p => limpo.includes(p));
+}
+
+// Evita denunciar o mesmo item várias vezes na mesma sessão (só trava no navegador,
+// não impede reenvio depois de recarregar - suficiente pra reduzir cliques repetidos).
+const itensJaDenunciados = new Set();
+function denunciarItem(tipo, itemId, botaoEl) {
+    const chave = tipo + ":" + itemId;
+    if (itensJaDenunciados.has(chave)) {
+        alert("Você já denunciou este conteúdo.");
+        return;
+    }
+    if (!confirm("Denunciar este conteúdo como impróprio?")) return;
+    if (!firebaseConfigured || !db) {
+        alert("Não foi possível enviar a denúncia agora.");
+        return;
+    }
+    authReadyPromise.then((uid) => {
+        if (!uid) {
+            alert("Não foi possível identificar seu dispositivo agora. Tente novamente em instantes.");
+            return;
+        }
+        db.collection("denuncias").add({
+            tipo: tipo,
+            itemId: itemId,
+            criadoEm: firebase.firestore.FieldValue.serverTimestamp(),
+            uid: uid
+        }).then(() => {
+            itensJaDenunciados.add(chave);
+            if (botaoEl) { botaoEl.disabled = true; botaoEl.style.opacity = "0.5"; }
+            logEvento("denuncia_enviada", { tipo: tipo });
+            alert("Denúncia enviada. Obrigado por ajudar a manter o app seguro.");
+        }).catch(err => {
+            console.error("Erro ao enviar denúncia:", err);
+            alert("Não foi possível enviar a denúncia agora.");
+        });
+    });
+}
 
 // ==================== HELPERS DE MODAL (compatível com WebView de apps nativos) ====================
 // Em vez de depender de position:fixed (que alguns WebViews Android renderizam errado),
@@ -24308,7 +24384,7 @@ function carregarComentarios(id) {
         .where("localId", "==", id)
         .get()
         .then(snapshot => {
-            const comentarios = snapshot.docs.map(d => d.data());
+            const comentarios = snapshot.docs.map(d => ({ _docId: d.id, ...d.data() }));
             comentarios.sort((a, b) => {
                 const ta = a.criadoEm && a.criadoEm.toMillis ? a.criadoEm.toMillis() : 0;
                 const tb = b.criadoEm && b.criadoEm.toMillis ? b.criadoEm.toMillis() : 0;
@@ -24345,6 +24421,9 @@ function renderComentarios(comentarios) {
                 <span style="color:#ffc107; font-size:12px;">${"★".repeat(c.nota || 0)}${"☆".repeat(5 - (c.nota || 0))}</span>
             </div>
             <p style="font-size:13px; color:#555; margin:5px 0 0;">${(c.texto || "").replace(/</g, "&lt;")}</p>
+            <button onclick="denunciarItem('comentario', '${c._docId}', this)" style="border:none; background:none; color:#c94747; font-size:11px; padding:4px 0; margin-top:2px; cursor:pointer;">
+                <i class="fas fa-flag"></i> Denunciar
+            </button>
         </div>`).join("");
 }
 
@@ -24358,6 +24437,10 @@ function enviarComentario(id) {
     }
     if (!texto) {
         alert("Escreva um comentário antes de enviar.");
+        return;
+    }
+    if (contemPalavraBloqueada(texto) || contemPalavraBloqueada(nome)) {
+        alert("Seu comentário parece conter linguagem imprópria. Por favor, revise o texto antes de enviar.");
         return;
     }
 
@@ -24376,10 +24459,12 @@ function enviarComentario(id) {
             criadoEm: firebase.firestore.FieldValue.serverTimestamp(),
             uid: uid
         }).then(() => {
+            const notaEnviada = notaComentarioSelecionada;
             document.getElementById("comentario-nome").value = "";
             document.getElementById("comentario-texto").value = "";
             notaComentarioSelecionada = 0;
             definirNotaComentario(0);
+            logEvento("comentario_enviado", { local_id: id, nota: notaEnviada });
             carregarComentarios(id);
         }).catch(err => {
             console.error("Erro ao enviar comentário:", err);
@@ -24542,7 +24627,10 @@ function renderRecados() {
             <div class="recado-acoes">
                 <button class="recado-btn-icone" title="Editar" onclick="editarRecado('${r.id}')"><i class="fas fa-pencil-alt"></i></button>
                 <button class="recado-btn-icone" title="Excluir" onclick="excluirRecado('${r.id}')"><i class="fas fa-trash-alt"></i></button>
-            </div>` : "";
+            </div>` : `
+            <div class="recado-acoes">
+                <button class="recado-btn-icone" title="Denunciar" onclick="denunciarItem('recado', '${r.id}', this)"><i class="fas fa-flag"></i></button>
+            </div>`;
 
         return `
         <div class="recado-card">
@@ -24619,6 +24707,10 @@ function enviarRecado() {
         alert("Escreva uma mensagem antes de enviar.");
         return;
     }
+    if (contemPalavraBloqueada(mensagem) || contemPalavraBloqueada(nome)) {
+        alert("Sua mensagem parece conter linguagem imprópria. Por favor, revise o texto antes de enviar.");
+        return;
+    }
 
     // Espera o login anônimo terminar (normalmente já está pronto) para gravar o
     // uid do autor — é isso que garante, no servidor, que só ele poderá
@@ -24637,6 +24729,7 @@ function enviarRecado() {
             salvarMeuRecado(docRef.id);
             nomeEl.value = "";
             textoEl.value = "";
+            logEvento("recado_enviado");
             carregarRecados();
         }).catch(err => {
             console.error("Erro ao enviar recado:", err);
@@ -24683,6 +24776,7 @@ function ativarNotificacoes() {
                 }).then(() => {
                     document.getElementById("btn-notificacoes").innerHTML = '<i class="fas fa-bell"></i> Notificações ativadas';
                     document.getElementById("btn-notificacoes").disabled = true;
+                    logEvento("notificacao_ativada");
                 });
             });
         }).catch(err => console.error("Erro ao obter token de notificação:", err));
@@ -24973,6 +25067,7 @@ function abrir(i) {
     scrollPosSalva = window.scrollY;
     const id = paginas[i].id;
     const p = paginas[i];
+    logEvento("visualizar_local", { local_id: id, local_nome: p.nome, categoria: p.cat || "" });
 
     let conteudo = p.html;
     let avisoTraducao = "";
