@@ -26,7 +26,21 @@
             --text-sub: #707070;
         }
 
-        body { margin: 0; font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
+        html {
+            overflow-x: hidden;
+            overscroll-behavior-x: none; /* impede o "elastic bounce" horizontal que mostra espaço em branco */
+            background: var(--bg);
+        }
+        body {
+            margin: 0; font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--text);
+            overflow-x: hidden;
+            overscroll-behavior-x: none;
+            -webkit-tap-highlight-color: transparent; /* remove o quadrado de sombra ao tocar */
+        }
+        button, a, .hero-icon-btn, .side-drawer-item, .bottom-nav-item {
+            -webkit-tap-highlight-color: transparent;
+            outline: none;
+        }
         
         /* Estilo da nova barra de status */
         .status-bar { 
